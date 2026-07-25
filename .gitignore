@@ -1,0 +1,8 @@
+CLAUDE.md
+.claude/
+.devcontainer/
+run-autonomous.sh
+README-SETUP.md
+run.log
+node_modules/
+dist/
