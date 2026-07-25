@@ -15,24 +15,21 @@ const projects = (await getCollection('projects')).sort(
 	<Header />
 	<main>
 		<section class="relative overflow-hidden border-b border-border">
-			<div
-				class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_theme(colors.surface)_0%,_theme(colors.bg)_60%)]"
-			>
-			</div>
+			<div class="pointer-events-none absolute inset-0 -z-10 bg-hero-glow"></div>
 			<div id="hero-canvas" class="pointer-events-none absolute inset-0 -z-10"></div>
 			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-24 sm:py-32">
 				<p class="font-mono text-sm text-accent">{profile.role}</p>
-				<h1 class="text-4xl font-medium text-fg sm:text-5xl">{profile.name}</h1>
+				<h1 class="text-4xl font-medium tracking-tight text-fg sm:text-5xl">{profile.name}</h1>
 				<div class="flex flex-wrap gap-4 pt-2">
 					<a
 						href="#projects"
-						class="border border-accent bg-accent px-5 py-2.5 text-sm text-bg transition-colors hover:bg-accent-hover hover:border-accent-hover"
+						class="rounded-lg border border-accent bg-accent px-5 py-2.5 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:bg-accent-hover hover:border-accent-hover"
 					>
 						Смотреть проекты
 					</a>
 					<a
 						href={profile.resumeUrl}
-						class="border border-border px-5 py-2.5 text-sm text-fg transition-colors hover:border-accent"
+						class="rounded-lg border border-border bg-surface/60 px-5 py-2.5 text-sm text-fg backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-accent"
 						target="_blank"
 						rel="noreferrer"
 					>
@@ -42,7 +39,7 @@ const projects = (await getCollection('projects')).sort(
 			</div>
 		</section>
 
-		<section id="about" class="border-b border-border">
+		<section id="about" class="border-b border-border bg-surface/30">
 			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-20">
 				<h2 class="text-2xl font-medium text-fg">Обо мне</h2>
 				<div class="flex flex-col gap-4 text-base leading-relaxed text-muted">
@@ -70,7 +67,7 @@ const projects = (await getCollection('projects')).sort(
 			</div>
 		</section>
 
-		<section id="contacts">
+		<section id="contacts" class="bg-surface/30">
 			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-20">
 				<h2 class="text-2xl font-medium text-fg">Контакты</h2>
 				<ul class="flex flex-col gap-3 text-base text-muted">

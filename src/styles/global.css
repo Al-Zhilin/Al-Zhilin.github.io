@@ -11,10 +11,24 @@
 @layer base {
   html {
     color-scheme: dark;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-bg text-fg font-sans antialiased;
+    background-image:
+      radial-gradient(
+        ellipse 70% 45% at 15% 0%,
+        rgba(77, 126, 242, 0.1),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 55% 40% at 100% 15%,
+        rgba(124, 108, 240, 0.08),
+        transparent 60%
+      );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 
   ::selection {

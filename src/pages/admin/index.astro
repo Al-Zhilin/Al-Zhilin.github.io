@@ -6,7 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 	<main class="mx-auto flex max-w-3xl flex-col gap-12 px-6 py-16">
 		<h1 class="text-2xl font-medium text-fg">Админ-панель</h1>
 
-		<section class="flex flex-col gap-3 border border-border p-6">
+		<section class="flex flex-col gap-3 rounded-xl border border-border bg-surface p-6 shadow-card">
 			<h2 class="text-lg font-medium text-fg">GitHub токен</h2>
 			<p class="text-sm text-muted">
 				Fine-grained personal access token с правами <code class="font-mono">contents: write</code> только на репозиторий
@@ -17,63 +17,63 @@ import Layout from '../../layouts/Layout.astro';
 					id="token-input"
 					type="password"
 					placeholder="github_pat_..."
-					class="flex-1 border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-accent"
+					class="flex-1 rounded-lg border border-border bg-bg/60 px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
 				/>
-				<button id="token-save" class="border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+				<button id="token-save" class="rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
 					Сохранить
 				</button>
-				<button id="token-clear" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+				<button id="token-clear" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
 					Очистить
 				</button>
 			</div>
 			<p id="token-status" class="font-mono text-sm text-muted">Токен не задан</p>
 		</section>
 
-		<section class="flex flex-col gap-4 border border-border p-6">
+		<section class="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 shadow-card">
 			<h2 class="text-lg font-medium text-fg">Обо мне</h2>
 			<p id="profile-status" class="font-mono text-sm text-muted"></p>
-			<button id="profile-load" class="self-start border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+			<button id="profile-load" class="self-start rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
 				Загрузить текущий profile.json
 			</button>
 
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Имя
-				<input id="profile-name" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-name" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Роль
-				<input id="profile-role" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-role" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Био (абзацы разделяются пустой строкой)
-				<textarea id="profile-bio" rows="6" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent"
+				<textarea id="profile-bio" rows="6" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
 				></textarea>
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Ссылка на резюме
-				<input id="profile-resume" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-resume" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Email
-				<input id="profile-email" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-email" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				GitHub
-				<input id="profile-github" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-github" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
 			<label class="flex flex-col gap-1 text-sm text-muted">
 				Telegram
-				<input id="profile-telegram" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				<input id="profile-telegram" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 			</label>
-			<button id="profile-save" class="self-start border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+			<button id="profile-save" class="self-start rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
 				Сохранить profile.json
 			</button>
 		</section>
 
-		<section class="flex flex-col gap-4 border border-border p-6">
+		<section class="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 shadow-card">
 			<h2 class="text-lg font-medium text-fg">Проекты</h2>
 			<p id="projects-status" class="font-mono text-sm text-muted"></p>
-			<button id="projects-load" class="self-start border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+			<button id="projects-load" class="self-start rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
 				Загрузить список проектов
 			</button>
 			<ul id="projects-list" class="flex flex-col gap-2"></ul>
@@ -85,9 +85,9 @@ import Layout from '../../layouts/Layout.astro';
 						id="import-repo"
 						type="text"
 						placeholder="owner/repo"
-						class="flex-1 border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-accent"
+						class="flex-1 rounded-lg border border-border bg-bg/60 px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
 					/>
-					<button id="import-run" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+					<button id="import-run" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
 						Импортировать
 					</button>
 				</div>
@@ -97,46 +97,46 @@ import Layout from '../../layouts/Layout.astro';
 				<input type="hidden" id="project-sha" />
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Название
-					<input id="project-title" type="text" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+					<input id="project-title" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Slug (URL)
-					<input id="project-slug" type="text" required class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+					<input id="project-slug" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Краткое описание (для карточки)
-					<textarea id="project-summary" rows="2" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent"
+					<textarea id="project-summary" rows="2" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
 					></textarea>
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Теги (через запятую)
-					<input id="project-tags" type="text" class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+					<input id="project-tags" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					GitHub URL
-					<input id="project-github-url" type="text" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+					<input id="project-github-url" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Обложка (необязательно)
-					<input id="project-cover" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+					<input id="project-cover" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Дата
-					<input id="project-date" type="text" required placeholder="2026-01-01" class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+					<input id="project-date" type="text" required placeholder="2026-01-01" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
 				</label>
 				<label class="flex flex-col gap-1 text-sm text-muted">
 					Описание (markdown)
-					<textarea id="project-body" rows="10" class="border border-border bg-surface px-3 py-2 font-mono text-sm text-fg outline-none focus:border-accent"
+					<textarea id="project-body" rows="10" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
 					></textarea>
 				</label>
 				<div class="flex gap-3">
-					<button type="submit" id="project-save" class="border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+					<button type="submit" id="project-save" class="rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
 						Сохранить проект
 					</button>
-					<button type="button" id="project-delete" class="border border-border px-4 py-2 text-sm text-fg hover:border-red-500 hover:text-red-400" disabled>
+					<button type="button" id="project-delete" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-red-500 hover:text-red-400 disabled:pointer-events-none disabled:opacity-40" disabled>
 						Удалить проект
 					</button>
-					<button type="button" id="project-reset" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+					<button type="button" id="project-reset" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
 						Новый проект
 					</button>
 				</div>
@@ -277,12 +277,12 @@ import Layout from '../../layouts/Layout.astro';
 			);
 			for (const file of files) {
 				const li = document.createElement('li');
-				li.className = 'flex items-center justify-between border border-border px-3 py-2 text-sm';
+				li.className = 'flex items-center justify-between rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm';
 				const name = document.createElement('span');
 				name.className = 'font-mono text-fg';
 				name.textContent = file.name;
 				const editButton = document.createElement('button');
-				editButton.className = 'border border-border px-3 py-1 text-xs text-fg hover:border-accent';
+				editButton.className = 'rounded-md border border-border px-3 py-1 text-xs text-fg transition-colors hover:border-accent';
 				editButton.textContent = 'Редактировать';
 				editButton.addEventListener('click', () => loadProjectIntoForm(file.path));
 				li.append(name, editButton);

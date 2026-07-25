@@ -16,17 +16,19 @@ const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
 
 <a
 	href={`/projects/${slug}/`}
-	class="group flex flex-col gap-3 border border-border p-6 transition-colors hover:border-accent"
+	class="group flex flex-col gap-3 rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-card-hover"
 >
 	<div class="flex items-center justify-between gap-4">
-		<h3 class="text-lg font-medium text-fg group-hover:text-accent">{title}</h3>
+		<h3 class="text-lg font-medium text-fg transition-colors group-hover:text-accent">{title}</h3>
 		<time datetime={date} class="shrink-0 font-mono text-sm text-muted">{formattedDate}</time>
 	</div>
 	<p class="text-sm text-muted">{summary}</p>
 	<ul class="mt-auto flex flex-wrap gap-2 pt-2">
 		{
 			tags.map((tag) => (
-				<li class="border border-border px-2 py-0.5 font-mono text-sm text-muted">{tag}</li>
+				<li class="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-sm text-muted">
+					{tag}
+				</li>
 			))
 		}
 	</ul>
