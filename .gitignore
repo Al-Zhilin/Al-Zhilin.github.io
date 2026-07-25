@@ -6,3 +6,9 @@ README-SETUP.md
 run.log
 node_modules/
 dist/
+.astro/
+.env
+.env.production
+.DS_Store
+.idea/
+npm-debug.log*
