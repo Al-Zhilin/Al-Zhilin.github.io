@@ -1,0 +1,437 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Админ-панель" noindex={true}>
+	<main class="mx-auto flex max-w-3xl flex-col gap-12 px-6 py-16">
+		<h1 class="text-2xl font-medium text-fg">Админ-панель</h1>
+
+		<section class="flex flex-col gap-3 border border-border p-6">
+			<h2 class="text-lg font-medium text-fg">GitHub токен</h2>
+			<p class="text-sm text-muted">
+				Fine-grained personal access token с правами <code class="font-mono">contents: write</code> только на репозиторий
+				<code class="font-mono">Al-Zhilin/Al-Zhilin.github.io</code>. Хранится только в sessionStorage этой вкладки.
+			</p>
+			<div class="flex gap-3">
+				<input
+					id="token-input"
+					type="password"
+					placeholder="github_pat_..."
+					class="flex-1 border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-accent"
+				/>
+				<button id="token-save" class="border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+					Сохранить
+				</button>
+				<button id="token-clear" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+					Очистить
+				</button>
+			</div>
+			<p id="token-status" class="font-mono text-sm text-muted">Токен не задан</p>
+		</section>
+
+		<section class="flex flex-col gap-4 border border-border p-6">
+			<h2 class="text-lg font-medium text-fg">Обо мне</h2>
+			<p id="profile-status" class="font-mono text-sm text-muted"></p>
+			<button id="profile-load" class="self-start border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+				Загрузить текущий profile.json
+			</button>
+
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Имя
+				<input id="profile-name" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Роль
+				<input id="profile-role" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Био (абзацы разделяются пустой строкой)
+				<textarea id="profile-bio" rows="6" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent"
+				></textarea>
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Ссылка на резюме
+				<input id="profile-resume" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Email
+				<input id="profile-email" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				GitHub
+				<input id="profile-github" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<label class="flex flex-col gap-1 text-sm text-muted">
+				Telegram
+				<input id="profile-telegram" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+			</label>
+			<button id="profile-save" class="self-start border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+				Сохранить profile.json
+			</button>
+		</section>
+
+		<section class="flex flex-col gap-4 border border-border p-6">
+			<h2 class="text-lg font-medium text-fg">Проекты</h2>
+			<p id="projects-status" class="font-mono text-sm text-muted"></p>
+			<button id="projects-load" class="self-start border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+				Загрузить список проектов
+			</button>
+			<ul id="projects-list" class="flex flex-col gap-2"></ul>
+
+			<div class="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+				<h3 class="text-base font-medium text-fg">Импорт из GitHub repo</h3>
+				<div class="flex gap-3">
+					<input
+						id="import-repo"
+						type="text"
+						placeholder="owner/repo"
+						class="flex-1 border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-accent"
+					/>
+					<button id="import-run" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+						Импортировать
+					</button>
+				</div>
+			</div>
+
+			<form id="project-form" class="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+				<input type="hidden" id="project-sha" />
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Название
+					<input id="project-title" type="text" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Slug (URL)
+					<input id="project-slug" type="text" required class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Краткое описание (для карточки)
+					<textarea id="project-summary" rows="2" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent"
+					></textarea>
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Теги (через запятую)
+					<input id="project-tags" type="text" class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					GitHub URL
+					<input id="project-github-url" type="text" required class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Обложка (необязательно)
+					<input id="project-cover" type="text" class="border border-border bg-surface px-3 py-2 text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Дата
+					<input id="project-date" type="text" required placeholder="2026-01-01" class="border border-border bg-surface px-3 py-2 font-mono text-fg outline-none focus:border-accent" />
+				</label>
+				<label class="flex flex-col gap-1 text-sm text-muted">
+					Описание (markdown)
+					<textarea id="project-body" rows="10" class="border border-border bg-surface px-3 py-2 font-mono text-sm text-fg outline-none focus:border-accent"
+					></textarea>
+				</label>
+				<div class="flex gap-3">
+					<button type="submit" id="project-save" class="border border-accent bg-accent px-4 py-2 text-sm text-bg hover:bg-accent-hover">
+						Сохранить проект
+					</button>
+					<button type="button" id="project-delete" class="border border-border px-4 py-2 text-sm text-fg hover:border-red-500 hover:text-red-400" disabled>
+						Удалить проект
+					</button>
+					<button type="button" id="project-reset" class="border border-border px-4 py-2 text-sm text-fg hover:border-accent">
+						Новый проект
+					</button>
+				</div>
+			</form>
+		</section>
+	</main>
+</Layout>
+
+<script>
+	import { slugify } from '../../lib/slug';
+	import { serializeProjectFrontmatter, parseProjectMarkdown, type ProjectFormData } from '../../lib/project-frontmatter';
+	import { parseRepoResponse, decodeBase64Content, encodeBase64Content, parseApiError } from '../../lib/github-api';
+	import { serializeProfile, bioTextToParagraphs, bioParagraphsToText, type ProfileData } from '../../lib/profile';
+
+	const REPO_OWNER = 'Al-Zhilin';
+	const REPO_NAME = 'Al-Zhilin.github.io';
+	const API_BASE = 'https://api.github.com';
+	const PROJECTS_PATH = 'src/content/projects';
+	const PROFILE_PATH = 'src/data/profile.json';
+	const BRANCH = 'main';
+	const TOKEN_KEY = 'gh_pat';
+
+	const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+	function getToken(): string | null {
+		return sessionStorage.getItem(TOKEN_KEY);
+	}
+
+	function requireToken(): string {
+		const token = getToken();
+		if (!token) throw new Error('Сначала сохраните GitHub токен');
+		return token;
+	}
+
+	async function githubFetch(path: string, init: RequestInit = {}) {
+		const token = requireToken();
+		const res = await fetch(`${API_BASE}${path}`, {
+			...init,
+			headers: {
+				Authorization: `Bearer ${token}`,
+				Accept: 'application/vnd.github+json',
+				'X-GitHub-Api-Version': '2022-11-28',
+				...(init.headers ?? {}),
+			},
+		});
+		if (!res.ok) {
+			const json = await res.json().catch(() => ({}));
+			const error = parseApiError(res.status, json);
+			throw new Error(error.message);
+		}
+		return res.json();
+	}
+
+	// --- Token ---
+	function refreshTokenStatus() {
+		const token = getToken();
+		$('token-status').textContent = token ? `Токен сохранён (${token.slice(0, 8)}…)` : 'Токен не задан';
+	}
+
+	$('token-save').addEventListener('click', () => {
+		const value = $<HTMLInputElement>('token-input').value.trim();
+		if (!value) return;
+		sessionStorage.setItem(TOKEN_KEY, value);
+		$<HTMLInputElement>('token-input').value = '';
+		refreshTokenStatus();
+	});
+
+	$('token-clear').addEventListener('click', () => {
+		sessionStorage.removeItem(TOKEN_KEY);
+		refreshTokenStatus();
+	});
+
+	refreshTokenStatus();
+
+	// --- Profile ---
+	let profileSha: string | null = null;
+
+	$('profile-load').addEventListener('click', async () => {
+		const status = $('profile-status');
+		status.textContent = 'Загрузка...';
+		try {
+			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}?ref=${BRANCH}`);
+			profileSha = json.sha;
+			const data: ProfileData = JSON.parse(decodeBase64Content(json));
+			$<HTMLInputElement>('profile-name').value = data.name;
+			$<HTMLInputElement>('profile-role').value = data.role;
+			$<HTMLTextAreaElement>('profile-bio').value = bioParagraphsToText(data.bio);
+			$<HTMLInputElement>('profile-resume').value = data.resumeUrl;
+			$<HTMLInputElement>('profile-email').value = data.contacts.email;
+			$<HTMLInputElement>('profile-github').value = data.contacts.github;
+			$<HTMLInputElement>('profile-telegram').value = data.contacts.telegram;
+			status.textContent = 'Загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	$('profile-save').addEventListener('click', async () => {
+		const status = $('profile-status');
+		try {
+			const data: ProfileData = {
+				name: $<HTMLInputElement>('profile-name').value.trim(),
+				role: $<HTMLInputElement>('profile-role').value.trim(),
+				bio: bioTextToParagraphs($<HTMLTextAreaElement>('profile-bio').value),
+				resumeUrl: $<HTMLInputElement>('profile-resume').value.trim(),
+				contacts: {
+					email: $<HTMLInputElement>('profile-email').value.trim(),
+					github: $<HTMLInputElement>('profile-github').value.trim(),
+					telegram: $<HTMLInputElement>('profile-telegram').value.trim(),
+				},
+			};
+			const content = serializeProfile(data);
+			status.textContent = 'Сохранение...';
+			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					message: `Update profile: ${data.name}`,
+					content: encodeBase64Content(content),
+					sha: profileSha ?? undefined,
+					branch: BRANCH,
+				}),
+			});
+			status.textContent = 'Сохранено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	// --- Projects list ---
+	async function loadProjectsList() {
+		const status = $('projects-status');
+		const list = $('projects-list');
+		status.textContent = 'Загрузка...';
+		list.innerHTML = '';
+		try {
+			const files: { name: string; path: string }[] = await githubFetch(
+				`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROJECTS_PATH}?ref=${BRANCH}`
+			);
+			for (const file of files) {
+				const li = document.createElement('li');
+				li.className = 'flex items-center justify-between border border-border px-3 py-2 text-sm';
+				const name = document.createElement('span');
+				name.className = 'font-mono text-fg';
+				name.textContent = file.name;
+				const editButton = document.createElement('button');
+				editButton.className = 'border border-border px-3 py-1 text-xs text-fg hover:border-accent';
+				editButton.textContent = 'Редактировать';
+				editButton.addEventListener('click', () => loadProjectIntoForm(file.path));
+				li.append(name, editButton);
+				list.append(li);
+			}
+			status.textContent = `${files.length} проект(ов)`;
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	$('projects-load').addEventListener('click', loadProjectsList);
+
+	let currentProjectPath: string | null = null;
+	let currentProjectSha: string | null = null;
+
+	async function loadProjectIntoForm(path: string) {
+		const status = $('projects-status');
+		status.textContent = 'Загрузка проекта...';
+		try {
+			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}?ref=${BRANCH}`);
+			const raw = decodeBase64Content(json);
+			const { frontmatter, body } = parseProjectMarkdown(raw);
+
+			currentProjectPath = path;
+			currentProjectSha = json.sha;
+
+			$<HTMLInputElement>('project-title').value = String(frontmatter.title ?? '');
+			$<HTMLInputElement>('project-slug').value = String(frontmatter.slug ?? '');
+			$<HTMLTextAreaElement>('project-summary').value = String(frontmatter.summary ?? '');
+			$<HTMLInputElement>('project-tags').value = Array.isArray(frontmatter.tags) ? frontmatter.tags.join(', ') : '';
+			$<HTMLInputElement>('project-github-url').value = String(frontmatter.githubUrl ?? '');
+			$<HTMLInputElement>('project-cover').value = String(frontmatter.coverImage ?? '');
+			$<HTMLInputElement>('project-date').value = String(frontmatter.date ?? '');
+			$<HTMLTextAreaElement>('project-body').value = body;
+			$<HTMLButtonElement>('project-delete').disabled = false;
+			status.textContent = `Редактируется: ${path}`;
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	$('project-reset').addEventListener('click', () => {
+		currentProjectPath = null;
+		currentProjectSha = null;
+		$<HTMLFormElement>('project-form').reset();
+		$<HTMLButtonElement>('project-delete').disabled = true;
+		$('projects-status').textContent = 'Новый проект';
+	});
+
+	$('project-title').addEventListener('input', () => {
+		const slugField = $<HTMLInputElement>('project-slug');
+		if (!currentProjectPath) {
+			slugField.value = slugify($<HTMLInputElement>('project-title').value);
+		}
+	});
+
+	function readProjectForm(): ProjectFormData {
+		return {
+			title: $<HTMLInputElement>('project-title').value.trim(),
+			slug: $<HTMLInputElement>('project-slug').value.trim(),
+			summary: $<HTMLTextAreaElement>('project-summary').value.trim(),
+			tags: $<HTMLInputElement>('project-tags')
+				.value.split(',')
+				.map((tag) => tag.trim())
+				.filter(Boolean),
+			githubUrl: $<HTMLInputElement>('project-github-url').value.trim(),
+			coverImage: $<HTMLInputElement>('project-cover').value.trim() || undefined,
+			date: $<HTMLInputElement>('project-date').value.trim(),
+			body: $<HTMLTextAreaElement>('project-body').value,
+		};
+	}
+
+	$('project-form').addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const status = $('projects-status');
+		try {
+			const data = readProjectForm();
+			const path = currentProjectPath ?? `${PROJECTS_PATH}/${data.slug}.md`;
+			const content = serializeProjectFrontmatter(data);
+			status.textContent = 'Сохранение...';
+			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					message: currentProjectPath ? `Update project: ${data.title}` : `Add project: ${data.title}`,
+					content: encodeBase64Content(content),
+					sha: currentProjectSha ?? undefined,
+					branch: BRANCH,
+				}),
+			});
+			currentProjectPath = path;
+			status.textContent = 'Сохранено';
+			await loadProjectsList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	$('project-delete').addEventListener('click', async () => {
+		if (!currentProjectPath || !currentProjectSha) return;
+		const status = $('projects-status');
+		try {
+			status.textContent = 'Удаление...';
+			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${currentProjectPath}`, {
+				method: 'DELETE',
+				body: JSON.stringify({
+					message: `Delete project: ${currentProjectPath}`,
+					sha: currentProjectSha,
+					branch: BRANCH,
+				}),
+			});
+			$<HTMLButtonElement>('project-reset').click();
+			status.textContent = 'Удалено';
+			await loadProjectsList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	// --- Import from GitHub repo ---
+	$('import-run').addEventListener('click', async () => {
+		const status = $('projects-status');
+		const value = $<HTMLInputElement>('import-repo').value.trim();
+		const [owner, repo] = value.split('/');
+		if (!owner || !repo) {
+			status.textContent = 'Формат: owner/repo';
+			return;
+		}
+		try {
+			status.textContent = 'Импорт...';
+			const repoJson = await githubFetch(`/repos/${owner}/${repo}`);
+			const imported = parseRepoResponse(repoJson);
+
+			$<HTMLInputElement>('project-title').value = imported.title;
+			$<HTMLInputElement>('project-slug').value = slugify(imported.title);
+			$<HTMLTextAreaElement>('project-summary').value = imported.summary;
+			$<HTMLInputElement>('project-tags').value = imported.tags.join(', ');
+			$<HTMLInputElement>('project-github-url').value = imported.githubUrl;
+
+			try {
+				const readmeJson = await githubFetch(`/repos/${owner}/${repo}/readme`);
+				$<HTMLTextAreaElement>('project-body').value = decodeBase64Content(readmeJson);
+			} catch {
+				// README может отсутствовать — не блокируем импорт остальных полей
+			}
+
+			status.textContent = 'Импортировано, проверьте поля перед сохранением';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+</script>
