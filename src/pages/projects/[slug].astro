@@ -1,0 +1,79 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({
+		params: { slug: project.slug },
+		props: { project },
+	}));
+}
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, summary, tags, githubUrl, date } = project.data;
+const { Content } = await project.render();
+
+const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+---
+
+<Layout title={`${title} — проект`} description={summary}>
+	<Header />
+	<main>
+		<article class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-20">
+			<a href="/#projects" class="font-mono text-sm text-muted transition-colors hover:text-accent">
+				&larr; Все проекты
+			</a>
+
+			<header class="flex flex-col gap-4">
+				<h1 class="text-4xl font-medium text-fg">{title}</h1>
+				<p class="text-base text-muted">{summary}</p>
+				<div class="flex flex-wrap items-center gap-4">
+					<time datetime={date} class="font-mono text-sm text-muted">{formattedDate}</time>
+					<a
+						href={githubUrl}
+						target="_blank"
+						rel="noreferrer"
+						class="border border-border px-3 py-1 font-mono text-sm text-fg transition-colors hover:border-accent"
+					>
+						GitHub &rarr;
+					</a>
+				</div>
+				<ul class="flex flex-wrap gap-2">
+					{tags.map((tag) => <li class="border border-border px-2 py-0.5 font-mono text-sm text-muted">{tag}</li>)}
+				</ul>
+			</header>
+
+			<div class="prose-content flex flex-col gap-4 border-t border-border pt-8 text-base leading-relaxed text-muted">
+				<Content />
+			</div>
+		</article>
+	</main>
+	<Footer />
+</Layout>
+
+<style>
+	.prose-content :global(h2) {
+		@apply mt-4 text-2xl font-medium text-fg;
+	}
+	.prose-content :global(ul),
+	.prose-content :global(ol) {
+		@apply flex list-disc flex-col gap-1 pl-5;
+	}
+	.prose-content :global(strong) {
+		@apply font-medium text-fg;
+	}
+	.prose-content :global(a) {
+		@apply text-accent underline underline-offset-2;
+	}
+</style>

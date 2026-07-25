@@ -1,0 +1,14 @@
+---
+import profile from '../data/profile.json';
+---
+
+<header class="border-b border-border">
+	<div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+		<a href="/" class="font-mono text-sm text-fg">{profile.name}</a>
+		<nav class="flex items-center gap-6 text-sm text-muted">
+			<a href="#about" class="transition-colors hover:text-fg">Обо мне</a>
+			<a href="#projects" class="transition-colors hover:text-fg">Проекты</a>
+			<a href="#contacts" class="transition-colors hover:text-fg">Контакты</a>
+		</nav>
+	</div>
+</header>

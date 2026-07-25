@@ -1,0 +1,33 @@
+---
+interface Props {
+	title: string;
+	slug: string;
+	summary: string;
+	tags: string[];
+	date: string;
+}
+
+const { title, slug, summary, tags, date } = Astro.props;
+const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
+	year: 'numeric',
+	month: 'long',
+});
+---
+
+<a
+	href={`/projects/${slug}/`}
+	class="group flex flex-col gap-3 border border-border p-6 transition-colors hover:border-accent"
+>
+	<div class="flex items-center justify-between gap-4">
+		<h3 class="text-lg font-medium text-fg group-hover:text-accent">{title}</h3>
+		<time datetime={date} class="shrink-0 font-mono text-sm text-muted">{formattedDate}</time>
+	</div>
+	<p class="text-sm text-muted">{summary}</p>
+	<ul class="mt-auto flex flex-wrap gap-2 pt-2">
+		{
+			tags.map((tag) => (
+				<li class="border border-border px-2 py-0.5 font-mono text-sm text-muted">{tag}</li>
+			))
+		}
+	</ul>
+</a>
