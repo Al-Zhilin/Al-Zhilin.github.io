@@ -22,6 +22,19 @@ export interface ProfileData {
     p2: string;
     p3: string;
   };
+  sections: {
+    skills: { eyebrow: string; title: string };
+    work: { eyebrow: string; title: string };
+    exp: { eyebrow: string; title: string };
+    resume: {
+      eyebrow: string;
+      title: string;
+      sub: string;
+      download: string;
+      contact: string;
+    };
+    contact: { eyebrow: string; title: string };
+  };
   contacts: ProfileContact[];
 }
 

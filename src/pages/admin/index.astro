@@ -48,6 +48,12 @@ import Layout from '../../layouts/Layout.astro';
 				<label class="field"><span>Имя</span><input id="profile-name" type="text" class="input" /></label>
 				<label class="field"><span>Роль</span><input id="profile-role" type="text" class="input" /></label>
 			</div>
+
+			<label class="field">
+				<span>Файл резюме (PDF)</span>
+				<div id="resume-dropzone" class="dropzone">Перетащите PDF или нажмите для выбора</div>
+				<input id="resume-file" type="file" accept="application/pdf,.pdf" class="hidden" />
+			</label>
 			<label class="field"><span>Ссылка на резюме</span><input id="profile-resume" type="text" class="input" /></label>
 
 			<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Hero</h3>
@@ -68,6 +74,35 @@ import Layout from '../../layouts/Layout.astro';
 			<label class="field"><span>Вступление</span><textarea id="about-lead" rows="3" class="textarea"></textarea></label>
 			<label class="field"><span>Абзац 2</span><textarea id="about-p2" rows="3" class="textarea"></textarea></label>
 			<label class="field"><span>Абзац 3</span><textarea id="about-p3" rows="3" class="textarea"></textarea></label>
+
+			<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Заголовки секций</h3>
+			<div class="field-row">
+				<label class="field"><span>Навыки — надзаголовок</span><input id="sec-skills-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Навыки — заголовок</span><input id="sec-skills-title" type="text" class="input" /></label>
+			</div>
+			<div class="field-row">
+				<label class="field"><span>Проекты — надзаголовок</span><input id="sec-work-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Проекты — заголовок</span><input id="sec-work-title" type="text" class="input" /></label>
+			</div>
+			<div class="field-row">
+				<label class="field"><span>Опыт — надзаголовок</span><input id="sec-exp-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Опыт — заголовок</span><input id="sec-exp-title" type="text" class="input" /></label>
+			</div>
+			<div class="field-row">
+				<label class="field"><span>Контакты — надзаголовок</span><input id="sec-contact-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Контакты — заголовок</span><input id="sec-contact-title" type="text" class="input" /></label>
+			</div>
+
+			<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Резюме / CTA-блок</h3>
+			<div class="field-row">
+				<label class="field"><span>Надзаголовок</span><input id="sec-resume-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Заголовок</span><input id="sec-resume-title" type="text" class="input" /></label>
+			</div>
+			<label class="field"><span>Подзаголовок</span><textarea id="sec-resume-sub" rows="2" class="textarea"></textarea></label>
+			<div class="field-row">
+				<label class="field"><span>Кнопка «Скачать резюме»</span><input id="sec-resume-download" type="text" class="input" /></label>
+				<label class="field"><span>Кнопка «Написать мне»</span><input id="sec-resume-contact" type="text" class="input" /></label>
+			</div>
 
 			<div>
 				<button id="profile-save" class="btn btn-dark">Сохранить профиль</button>
@@ -346,6 +381,19 @@ import Layout from '../../layouts/Layout.astro';
 		$<HTMLTextAreaElement>('about-lead').value = data.about.lead;
 		$<HTMLTextAreaElement>('about-p2').value = data.about.p2;
 		$<HTMLTextAreaElement>('about-p3').value = data.about.p3;
+		$<HTMLInputElement>('sec-skills-eyebrow').value = data.sections.skills.eyebrow;
+		$<HTMLInputElement>('sec-skills-title').value = data.sections.skills.title;
+		$<HTMLInputElement>('sec-work-eyebrow').value = data.sections.work.eyebrow;
+		$<HTMLInputElement>('sec-work-title').value = data.sections.work.title;
+		$<HTMLInputElement>('sec-exp-eyebrow').value = data.sections.exp.eyebrow;
+		$<HTMLInputElement>('sec-exp-title').value = data.sections.exp.title;
+		$<HTMLInputElement>('sec-contact-eyebrow').value = data.sections.contact.eyebrow;
+		$<HTMLInputElement>('sec-contact-title').value = data.sections.contact.title;
+		$<HTMLInputElement>('sec-resume-eyebrow').value = data.sections.resume.eyebrow;
+		$<HTMLInputElement>('sec-resume-title').value = data.sections.resume.title;
+		$<HTMLTextAreaElement>('sec-resume-sub').value = data.sections.resume.sub;
+		$<HTMLInputElement>('sec-resume-download').value = data.sections.resume.download;
+		$<HTMLInputElement>('sec-resume-contact').value = data.sections.resume.contact;
 	}
 
 	async function loadProfile(): Promise<ProfileData> {
@@ -405,10 +453,91 @@ import Layout from '../../layouts/Layout.astro';
 				p2: $<HTMLTextAreaElement>('about-p2').value.trim(),
 				p3: $<HTMLTextAreaElement>('about-p3').value.trim(),
 			};
+			profileData.sections = {
+				skills: {
+					eyebrow: $<HTMLInputElement>('sec-skills-eyebrow').value.trim(),
+					title: $<HTMLInputElement>('sec-skills-title').value.trim(),
+				},
+				work: {
+					eyebrow: $<HTMLInputElement>('sec-work-eyebrow').value.trim(),
+					title: $<HTMLInputElement>('sec-work-title').value.trim(),
+				},
+				exp: {
+					eyebrow: $<HTMLInputElement>('sec-exp-eyebrow').value.trim(),
+					title: $<HTMLInputElement>('sec-exp-title').value.trim(),
+				},
+				resume: {
+					eyebrow: $<HTMLInputElement>('sec-resume-eyebrow').value.trim(),
+					title: $<HTMLInputElement>('sec-resume-title').value.trim(),
+					sub: $<HTMLTextAreaElement>('sec-resume-sub').value.trim(),
+					download: $<HTMLInputElement>('sec-resume-download').value.trim(),
+					contact: $<HTMLInputElement>('sec-resume-contact').value.trim(),
+				},
+				contact: {
+					eyebrow: $<HTMLInputElement>('sec-contact-eyebrow').value.trim(),
+					title: $<HTMLInputElement>('sec-contact-title').value.trim(),
+				},
+			};
 			await saveProfile(status);
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
+	});
+
+	// --- Resume file upload: commits straight to public/resume.pdf ---
+	const RESUME_PATH = 'public/resume.pdf';
+
+	async function uploadResume(file: File) {
+		const status = $('profile-status');
+		if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+			status.textContent = 'Ошибка: нужен файл в формате PDF';
+			return;
+		}
+		try {
+			status.textContent = 'Загрузка резюме...';
+			let existingSha: string | undefined;
+			try {
+				const existing = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${RESUME_PATH}?ref=${BRANCH}`);
+				existingSha = existing.sha;
+			} catch {
+				// файла ещё нет — создаём с нуля
+			}
+
+			const dataUrl: string = await new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(String(reader.result));
+				reader.onerror = () => reject(reader.error);
+				reader.readAsDataURL(file);
+			});
+			const base64 = dataUrlToBase64(dataUrl);
+			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${RESUME_PATH}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					message: 'Update resume.pdf',
+					content: base64,
+					sha: existingSha,
+					branch: BRANCH,
+				}),
+			});
+			$<HTMLInputElement>('profile-resume').value = '/resume.pdf';
+			if (profileData) profileData.resumeUrl = '/resume.pdf';
+			status.textContent = 'Резюме загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	const resumeDropzone = $('resume-dropzone');
+	const resumeFileInput = $<HTMLInputElement>('resume-file');
+	resumeDropzone.addEventListener('click', () => resumeFileInput.click());
+	resumeFileInput.addEventListener('change', () => {
+		if (resumeFileInput.files?.[0]) uploadResume(resumeFileInput.files[0]);
+	});
+	resumeDropzone.addEventListener('dragover', (e) => e.preventDefault());
+	resumeDropzone.addEventListener('drop', (e) => {
+		e.preventDefault();
+		const file = e.dataTransfer?.files?.[0];
+		if (file) uploadResume(file);
 	});
 
 	// --- Contacts (live inside profileData.contacts) ---

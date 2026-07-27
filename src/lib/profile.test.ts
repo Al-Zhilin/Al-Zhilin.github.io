@@ -47,6 +47,19 @@ describe("serializeProfile", () => {
         p2: "P2.",
         p3: "P3.",
       },
+      sections: {
+        skills: { eyebrow: "Eyebrow", title: "Title" },
+        work: { eyebrow: "Eyebrow", title: "Title" },
+        exp: { eyebrow: "Eyebrow", title: "Title" },
+        resume: {
+          eyebrow: "Eyebrow",
+          title: "Title",
+          sub: "Sub.",
+          download: "Download",
+          contact: "Contact",
+        },
+        contact: { eyebrow: "Eyebrow", title: "Title" },
+      },
       contacts: [
         { id: "c_email", label: "Email", value: "a@b.com", icon: "mail" },
       ],

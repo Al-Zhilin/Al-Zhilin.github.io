@@ -59,8 +59,8 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 		<section id="skills" class="border-t border-border px-6 py-20 sm:py-28">
 			<div class="mx-auto max-w-[1180px]">
 				<div class="mb-11 max-w-xl">
-					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">02 /</span>Технический стек</span>
-					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Мой стек</h2>
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">02 /</span>{profile.sections.skills.eyebrow}</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">{profile.sections.skills.title}</h2>
 				</div>
 				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 					{
@@ -87,8 +87,8 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 			<div class="mx-auto max-w-[1180px]">
 				<div class="mb-10 flex flex-wrap items-end justify-between gap-5">
 					<div class="max-w-xl">
-						<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">03 /</span>Избранные проекты</span>
-						<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Мои проекты</h2>
+						<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">03 /</span>{profile.sections.work.eyebrow}</span>
+						<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">{profile.sections.work.title}</h2>
 					</div>
 					{
 						projects.length > 0 && (
@@ -145,8 +145,8 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 		<section id="exp" class="border-t border-border px-6 py-20 sm:py-28">
 			<div class="mx-auto max-w-[1180px]">
 				<div class="mb-11 max-w-xl">
-					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">04 /</span>Опыт</span>
-					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Опыт разработки</h2>
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">04 /</span>{profile.sections.exp.eyebrow}</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">{profile.sections.exp.title}</h2>
 				</div>
 				<div class="flex flex-col divide-y divide-border">
 					{
@@ -183,19 +183,19 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 			<div class="mx-auto max-w-[1180px]">
 				<div class="neu mb-16 grid grid-cols-1 gap-8 p-8 sm:p-12 lg:grid-cols-2 lg:gap-11">
 					<div class="border-b border-border pb-8 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-11">
-						<span class="eyebrow">Резюме</span>
+						<span class="eyebrow">{profile.sections.resume.eyebrow}</span>
 						<h2 class="mt-3.5 font-display text-[clamp(26px,3.4vw,38px)] font-semibold tracking-tight text-fg">
-							Открыт к новым проектам
+							{profile.sections.resume.title}
 						</h2>
 					</div>
 					<div>
-						<p class="text-[16.5px] text-ink-3">Полное резюме с проектами, стеком и контактами — в одном файле.</p>
+						<p class="text-[16.5px] text-ink-3">{profile.sections.resume.sub}</p>
 						<div class="mt-6 flex flex-wrap items-center gap-4">
-							<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn btn-dark">Скачать резюме</a>
+							<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn btn-dark">{profile.sections.resume.download}</a>
 							{
 								profile.contacts[0] && (
 									<a href={`mailto:${profile.contacts[0].value}`} class="btn-link">
-										Написать мне <Icon name="arrow" size={15} />
+										{profile.sections.resume.contact} <Icon name="arrow" size={15} />
 									</a>
 								)
 							}
@@ -204,8 +204,8 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 				</div>
 
 				<div class="mb-7 max-w-xl">
-					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">05 /</span>Контакты</span>
-					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Контакты</h2>
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">05 /</span>{profile.sections.contact.eyebrow}</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">{profile.sections.contact.title}</h2>
 				</div>
 				<div class="grid gap-4 sm:grid-cols-2">
 					{
