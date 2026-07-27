@@ -351,18 +351,31 @@ import Layout from '../../layouts/Layout.astro';
 		const token = getToken();
 		$('token-status').textContent = token ? `Токен сохранён (${token.slice(0, 8)}…)` : 'Токен не задан';
 	}
+
+	// Подтягиваем весь текущий контент сайта сразу, как только известен токен —
+	// чтобы поля админки показывали то, что реально опубликовано, а не пустую форму.
+	async function autoLoadAll() {
+		if (!getToken()) return;
+		await refreshProfileTab();
+		await refreshSkillsTab();
+		await refreshExpTab();
+		await loadProjectsList();
+	}
+
 	$('token-save').addEventListener('click', () => {
 		const value = $<HTMLInputElement>('token-input').value.trim();
 		if (!value) return;
 		sessionStorage.setItem(TOKEN_KEY, value);
 		$<HTMLInputElement>('token-input').value = '';
 		refreshTokenStatus();
+		autoLoadAll();
 	});
 	$('token-clear').addEventListener('click', () => {
 		sessionStorage.removeItem(TOKEN_KEY);
 		refreshTokenStatus();
 	});
 	refreshTokenStatus();
+	autoLoadAll();
 
 	// ===================== PROFILE + CONTACTS (shared src/data/profile.json) =====================
 	let profileData: ProfileData | null = null;
@@ -420,7 +433,7 @@ import Layout from '../../layouts/Layout.astro';
 		status.textContent = 'Сохранено';
 	}
 
-	$('profile-load').addEventListener('click', async () => {
+	async function refreshProfileTab() {
 		const status = $('profile-status');
 		status.textContent = 'Загрузка...';
 		try {
@@ -431,7 +444,8 @@ import Layout from '../../layouts/Layout.astro';
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
-	});
+	}
+	$('profile-load').addEventListener('click', refreshProfileTab);
 
 	$('profile-save').addEventListener('click', async () => {
 		const status = $('profile-status');
@@ -610,7 +624,7 @@ import Layout from '../../layouts/Layout.astro';
 		}
 	});
 
-	$('contacts-load').addEventListener('click', async () => {
+	async function refreshContactsTab() {
 		const status = $('contacts-status');
 		status.textContent = 'Загрузка...';
 		try {
@@ -620,7 +634,8 @@ import Layout from '../../layouts/Layout.astro';
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
-	});
+	}
+	$('contacts-load').addEventListener('click', refreshContactsTab);
 
 	// ===================== SKILLS =====================
 	let skillsData: SkillCard[] = [];
@@ -708,7 +723,7 @@ import Layout from '../../layouts/Layout.astro';
 		}
 	});
 
-	$('skills-load').addEventListener('click', async () => {
+	async function refreshSkillsTab() {
 		const status = $('skills-status');
 		status.textContent = 'Загрузка...';
 		try {
@@ -720,7 +735,8 @@ import Layout from '../../layouts/Layout.astro';
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
-	});
+	}
+	$('skills-load').addEventListener('click', refreshSkillsTab);
 
 	// ===================== EXPERIENCE =====================
 	let expData: ExperienceEntry[] = [];
@@ -833,7 +849,7 @@ import Layout from '../../layouts/Layout.astro';
 		}
 	});
 
-	$('exp-load').addEventListener('click', async () => {
+	async function refreshExpTab() {
 		const status = $('exp-status');
 		status.textContent = 'Загрузка...';
 		try {
@@ -845,7 +861,8 @@ import Layout from '../../layouts/Layout.astro';
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
-	});
+	}
+	$('exp-load').addEventListener('click', refreshExpTab);
 
 	// ===================== PROJECTS =====================
 	async function loadProjectsList() {
