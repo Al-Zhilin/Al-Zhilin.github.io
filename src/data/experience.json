@@ -1,11 +1,15 @@
 [
   {
-    "when": "Сейчас",
+    "when": "2025 - Сейчас",
+    "current": true,
     "role": "Руководитель проекта Signal-Master",
     "company": "Грант «Студенческий стартап»",
-    "current": true,
-    "desc": "Аппаратно-программный комплекс для унифицированного удалённого управления измерительным оборудованием. FastAPI + PyVISA + Raspberry Pi 5, Bash Wi-Fi fallback.",
-    "tags": ["FastAPI", "PyVISA", "Raspberry Pi 5"]
+    "desc": "Аппаратно-программный комплекс для унифицированного Дистанционного управления измерительным оборудованием. FastAPI + PyVISA + Raspberry Pi 5, Bash Wi-Fi fallback.",
+    "tags": [
+      "FastAPI",
+      "PyVISA",
+      "Raspberry Pi 5"
+    ]
   },
   {
     "when": "Сейчас",
@@ -13,7 +17,11 @@
     "company": "КубГУ, факультет Физики и Технологий",
     "current": true,
     "desc": "Специальность «Информационные системы и технологии». Embedded- и IoT-разработка: ESP32, FreeRTOS, bare-metal и RTOS-прошивки.",
-    "tags": ["ESP32", "FreeRTOS", "C/C++"]
+    "tags": [
+      "ESP32",
+      "FreeRTOS",
+      "C/C++"
+    ]
   },
   {
     "when": "7+ мероприятий",
@@ -21,6 +29,10 @@
     "company": "Команда AnyWay (хакатоны)",
     "current": false,
     "desc": "Лучший результат — топ-5 из 25 команд. Техническое лицо команды перед заказчиком.",
-    "tags": ["DevOps", "Networking", "Хакатоны"]
+    "tags": [
+      "DevOps",
+      "Networking",
+      "Хакатоны"
+    ]
   }
 ]
