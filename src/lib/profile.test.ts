@@ -33,13 +33,23 @@ describe("serializeProfile", () => {
     const data: ProfileData = {
       name: "Test",
       role: "Role",
-      bio: ["Para."],
       resumeUrl: "/resume.pdf",
-      contacts: {
-        email: "a@b.com",
-        github: "https://github.com/x",
-        telegram: "https://t.me/x",
+      hero: {
+        eyebrow: "Eyebrow",
+        titleA: "First",
+        titleB: " Last",
+        sub: "Sub.",
       },
+      about: {
+        eyebrow: "Eyebrow",
+        title: "Title",
+        lead: "Lead.",
+        p2: "P2.",
+        p3: "P3.",
+      },
+      contacts: [
+        { id: "c_email", label: "Email", value: "a@b.com", icon: "mail" },
+      ],
     };
     const serialized = serializeProfile(data);
     expect(serialized.endsWith("\n")).toBe(true);

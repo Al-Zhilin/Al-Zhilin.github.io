@@ -5,6 +5,11 @@ export interface ProjectFormData {
   tags: string[];
   githubUrl: string;
   coverImage?: string;
+  category?: string;
+  lead?: string;
+  problem?: string;
+  solution?: string[];
+  result?: string;
   date: string;
   body: string;
 }
@@ -20,6 +25,21 @@ export function serializeProjectFrontmatter(data: ProjectFormData): string {
 
   if (data.coverImage) {
     lines.push(`coverImage: ${JSON.stringify(data.coverImage)}`);
+  }
+  if (data.category) {
+    lines.push(`category: ${JSON.stringify(data.category)}`);
+  }
+  if (data.lead) {
+    lines.push(`lead: ${JSON.stringify(data.lead)}`);
+  }
+  if (data.problem) {
+    lines.push(`problem: ${JSON.stringify(data.problem)}`);
+  }
+  if (data.solution && data.solution.length > 0) {
+    lines.push(`solution: ${JSON.stringify(data.solution)}`);
+  }
+  if (data.result) {
+    lines.push(`result: ${JSON.stringify(data.result)}`);
   }
 
   lines.push(`date: ${JSON.stringify(data.date)}`);

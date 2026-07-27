@@ -1,14 +1,76 @@
 ---
-import profile from '../data/profile.json';
+import Icon from './Icon.astro';
+
+const links = [
+	{ href: '#about', label: 'Обо мне' },
+	{ href: '#skills', label: 'Стек' },
+	{ href: '#work', label: 'Проекты' },
+	{ href: '#exp', label: 'Опыт' },
+	{ href: '#contact', label: 'Контакты' },
+];
 ---
 
-<header class="sticky top-0 z-50 border-b border-border/80 bg-bg/75 backdrop-blur-md">
-	<div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-		<a href="/" class="font-mono text-sm text-fg transition-colors hover:text-accent">{profile.name}</a>
-		<nav class="flex items-center gap-6 text-sm text-muted">
-			<a href="#about" class="transition-colors hover:text-fg">Обо мне</a>
-			<a href="#projects" class="transition-colors hover:text-fg">Проекты</a>
-			<a href="#contacts" class="transition-colors hover:text-fg">Контакты</a>
-		</nav>
+<nav class="fixed inset-x-4 top-4 z-50 sm:inset-x-6">
+	<div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4 rounded-full border border-white/10 bg-bg/85 px-3 py-2 shadow-card backdrop-blur-xl sm:px-4">
+		<a href="#top" class="whitespace-nowrap px-2 font-display text-sm font-bold tracking-tight text-fg">
+			Al<span class="text-accent">-</span>Zhilin
+		</a>
+		<div class="hidden items-center gap-1 md:flex">
+			{
+				links.map((link) => (
+					<a
+						href={link.href}
+						class="rounded-full px-3 py-2 font-mono text-[12px] uppercase tracking-wide text-ink-3 transition-colors hover:bg-white/5 hover:text-fg"
+					>
+						{link.label}
+					</a>
+				))
+			}
+		</div>
+		<button
+			id="nav-toggle"
+			type="button"
+			aria-label="Меню"
+			aria-expanded="false"
+			aria-controls="nav-mobile"
+			class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border text-ink-3 transition-colors hover:text-fg md:hidden"
+		>
+			<Icon name="menu" size={19} class="pointer-events-none" />
+		</button>
 	</div>
-</header>
+	<div
+		id="nav-mobile"
+		class="mt-2 hidden flex-col gap-1 rounded-2xl border border-border bg-surface p-3 shadow-card md:hidden"
+	>
+		{
+			links.map((link) => (
+				<a
+					href={link.href}
+					class="rounded-xl px-4 py-3 font-mono text-sm uppercase tracking-wide text-ink-3 transition-colors hover:bg-white/5 hover:text-fg"
+				>
+					{link.label}
+				</a>
+			))
+		}
+	</div>
+</nav>
+
+<script>
+	const toggle = document.getElementById('nav-toggle');
+	const menu = document.getElementById('nav-mobile');
+	if (toggle && menu) {
+		toggle.addEventListener('click', () => {
+			const isOpen = !menu.classList.contains('hidden');
+			menu.classList.toggle('hidden');
+			menu.classList.toggle('flex');
+			toggle.setAttribute('aria-expanded', String(!isOpen));
+		});
+		menu.querySelectorAll('a').forEach((a) => {
+			a.addEventListener('click', () => {
+				menu.classList.add('hidden');
+				menu.classList.remove('flex');
+				toggle.setAttribute('aria-expanded', 'false');
+			});
+		});
+	}
+</script>

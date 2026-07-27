@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  dataUrlToBase64,
   decodeBase64Content,
   encodeBase64Content,
   parseApiError,
@@ -52,6 +53,20 @@ describe("base64 content round-trip", () => {
       encoding: "utf-8",
     });
     expect(decoded).toBe("plain text");
+  });
+});
+
+describe("dataUrlToBase64", () => {
+  it("strips the data URL header, keeping only the base64 payload", () => {
+    expect(dataUrlToBase64("data:image/png;base64,AAAA==")).toBe("AAAA==");
+  });
+
+  it("throws when the URL is not base64-encoded", () => {
+    expect(() => dataUrlToBase64("data:text/plain,hello")).toThrow();
+  });
+
+  it("throws when there is no comma separating header and payload", () => {
+    expect(() => dataUrlToBase64("not-a-data-url")).toThrow();
   });
 });
 

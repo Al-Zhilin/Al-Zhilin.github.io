@@ -4,104 +4,290 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Icon from '../components/Icon.astro';
 import profile from '../data/profile.json';
+import skills from '../data/skills.json';
+import experience from '../data/experience.json';
+import { catLabel } from '../lib/categories';
 
 const projects = (await getCollection('projects')).sort(
 	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+const categories = ['all', ...new Set(projects.map((p) => p.data.category).filter(Boolean))] as string[];
 ---
 
-<Layout title={`${profile.name} — ${profile.role}`} description={profile.bio[0]}>
+<Layout title={`${profile.name} — ${profile.role}`} description={profile.about.lead}>
 	<Header />
 	<main>
-		<section class="relative overflow-hidden border-b border-border">
-			<div class="pointer-events-none absolute inset-0 -z-10 bg-hero-glow"></div>
+		<section id="top" class="hero relative overflow-hidden px-6 pb-16 pt-32 sm:pb-24 sm:pt-40">
 			<div id="hero-canvas" class="pointer-events-none absolute inset-0 -z-10"></div>
-			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-24 sm:py-32">
-				<p class="font-mono text-sm text-accent">{profile.role}</p>
-				<h1 class="text-4xl font-medium tracking-tight text-fg sm:text-5xl">{profile.name}</h1>
-				<div class="flex flex-wrap gap-4 pt-2">
-					<a
-						href="#projects"
-						class="rounded-lg border border-accent bg-accent px-5 py-2.5 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:bg-accent-hover hover:border-accent-hover"
-					>
-						Смотреть проекты
-					</a>
-					<a
-						href={profile.resumeUrl}
-						class="rounded-lg border border-border bg-surface/60 px-5 py-2.5 text-sm text-fg backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-accent"
-						target="_blank"
-						rel="noreferrer"
-					>
-						Резюме
+			<div class="pointer-events-none absolute inset-0 -z-10 bg-hero-glow"></div>
+			<div class="mx-auto max-w-3xl">
+				<span class="eyebrow">{profile.hero.eyebrow}</span>
+				<h1 class="mt-6 font-display text-[clamp(40px,8vw,76px)] font-semibold leading-[1.05] tracking-tight text-fg">
+					{profile.hero.titleA}{profile.hero.titleB}
+				</h1>
+				<p class="mt-6 max-w-md text-lg leading-relaxed text-ink-3">{profile.hero.sub}</p>
+				<div class="mt-9 flex flex-wrap gap-3.5">
+					<a href="#work" class="btn btn-dark">Смотреть проекты</a>
+					<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn-link">
+						Резюме <Icon name="arrow" size={15} />
 					</a>
 				</div>
 			</div>
 		</section>
 
-		<section id="about" class="border-b border-border bg-surface/30">
-			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-20">
-				<h2 class="text-2xl font-medium text-fg">Обо мне</h2>
-				<div class="flex flex-col gap-4 text-base leading-relaxed text-muted">
-					{profile.bio.map((paragraph) => <p>{paragraph}</p>)}
+		<section id="about" class="border-t border-border px-6 py-20 sm:py-28">
+			<div class="mx-auto max-w-3xl">
+				<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">01 /</span>{profile.about.eyebrow}</span>
+				<h2 class="mt-4 whitespace-pre-line font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">
+					{profile.about.title}
+				</h2>
+				<div class="mt-6 flex flex-col gap-4 text-base leading-relaxed text-ink-3">
+					<p class="text-[19px] text-ink-2">{profile.about.lead}</p>
+					<p>{profile.about.p2}</p>
+					<p>{profile.about.p3}</p>
 				</div>
 			</div>
 		</section>
 
-		<section id="projects" class="border-b border-border">
-			<div class="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-20">
-				<h2 class="text-2xl font-medium text-fg">Проекты</h2>
-				<div class="grid gap-6 sm:grid-cols-2">
+		<section id="skills" class="border-t border-border px-6 py-20 sm:py-28">
+			<div class="mx-auto max-w-[1180px]">
+				<div class="mb-11 max-w-xl">
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">02 /</span>Технический стек</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Мой стек</h2>
+				</div>
+				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 					{
-						projects.map((project) => (
-							<ProjectCard
-								title={project.data.title}
-								slug={project.slug}
-								summary={project.data.summary}
-								tags={project.data.tags}
-								date={project.data.date}
-							/>
+						skills.map((card) => (
+							<div class="neu p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/15">
+								<div class="mb-5 grid h-12 w-12 place-items-center rounded-xl bg-accent text-white">
+									<Icon name={card.icon} size={24} />
+								</div>
+								<h3 class="font-display text-lg font-semibold text-fg">{card.title}</h3>
+								<p class="mt-2 text-sm leading-relaxed text-ink-3">{card.desc}</p>
+								<div class="mt-4 flex flex-wrap gap-1.5">
+									{card.tags.map((tag) => (
+										<span class="chip chip-raised">{tag}</span>
+									))}
+								</div>
+							</div>
 						))
 					}
 				</div>
 			</div>
 		</section>
 
-		<section id="contacts" class="bg-surface/30">
-			<div class="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-20">
-				<h2 class="text-2xl font-medium text-fg">Контакты</h2>
-				<ul class="flex flex-col gap-3 text-base text-muted">
-					<li>
-						Email:
-						<a href={`mailto:${profile.contacts.email}`} class="text-fg transition-colors hover:text-accent">
-							{profile.contacts.email}
-						</a>
-					</li>
-					<li>
-						GitHub:
-						<a
-							href={profile.contacts.github}
-							class="text-fg transition-colors hover:text-accent"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{profile.contacts.github}
-						</a>
-					</li>
-					<li>
-						Telegram:
-						<a
-							href={profile.contacts.telegram}
-							class="text-fg transition-colors hover:text-accent"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{profile.contacts.telegram}
-						</a>
-					</li>
-				</ul>
+		<section id="work" class="border-t border-border px-6 py-20 sm:py-28">
+			<div class="mx-auto max-w-[1180px]">
+				<div class="mb-10 flex flex-wrap items-end justify-between gap-5">
+					<div class="max-w-xl">
+						<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">03 /</span>Избранные проекты</span>
+						<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Мои проекты</h2>
+					</div>
+					{
+						projects.length > 0 && (
+							<div class="flex flex-wrap items-center gap-3">
+								<div id="work-filters" class="flex flex-wrap gap-2">
+									{categories.map((cat) => (
+										<button
+											type="button"
+											data-filter={cat}
+											class:list={[
+												'rounded-full border border-border px-4 py-2 font-mono text-[12.5px] tracking-wide text-ink-3 transition-all hover:text-fg',
+												cat === 'all' && 'is-active',
+											]}
+										>
+											{cat === 'all' ? 'Все' : catLabel(cat)}
+										</button>
+									))}
+								</div>
+								<div id="work-view" class="flex gap-1 rounded-full border border-border bg-black/20 p-1">
+									<button type="button" data-view="grid" title="Сетка" class="is-active grid h-8 w-8 place-items-center rounded-full text-ink-3">
+										<Icon name="grid" size={15} />
+									</button>
+									<button type="button" data-view="list" title="Список" class="grid h-8 w-8 place-items-center rounded-full text-ink-3">
+										<Icon name="list" size={17} />
+									</button>
+								</div>
+							</div>
+						)
+					}
+				</div>
+
+				{
+					projects.length > 0 ? (
+						<div id="work-grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+							{projects.map((project, i) => (
+								<ProjectCard
+									title={project.data.title}
+									slug={project.slug}
+									summary={project.data.summary}
+									tags={project.data.tags}
+									category={project.data.category}
+									coverImage={project.data.coverImage}
+									index={i + 1}
+								/>
+							))}
+						</div>
+					) : (
+						<p class="font-mono text-sm text-ink-3">Проекты скоро появятся.</p>
+					)
+				}
+			</div>
+		</section>
+
+		<section id="exp" class="border-t border-border px-6 py-20 sm:py-28">
+			<div class="mx-auto max-w-[1180px]">
+				<div class="mb-11 max-w-xl">
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">04 /</span>Опыт</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Опыт разработки</h2>
+				</div>
+				<div class="flex flex-col divide-y divide-border">
+					{
+						experience.map((entry) => (
+							<div class="grid grid-cols-1 gap-3 py-7 sm:grid-cols-[180px_1fr] sm:gap-14">
+								<div class="font-mono text-[12.5px] text-ink-3">
+									<div>{entry.when}</div>
+									<div class="mt-1 opacity-70">{entry.company}</div>
+								</div>
+								<div class="relative border-l border-border pl-8">
+									<span
+										class:list={[
+											'absolute -left-[5px] top-1.5 h-[9px] w-[9px] rounded-full border-[1.5px]',
+											entry.current ? 'border-accent bg-accent' : 'border-white/15 bg-surface-2',
+										]}
+									/>
+									<h3 class="font-display text-lg font-semibold text-fg">{entry.role}</h3>
+									<div class="mt-0.5 font-display text-[15px] font-semibold text-ink-3">{entry.company}</div>
+									<p class="mt-3 text-[15px] leading-relaxed text-ink-3">{entry.desc}</p>
+									<div class="mt-3.5 flex flex-wrap gap-1.5">
+										{entry.tags.map((tag) => (
+											<span class="chip chip-raised">{tag}</span>
+										))}
+									</div>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<section id="contact" class="border-t border-border px-6 py-20 sm:py-28">
+			<div class="mx-auto max-w-[1180px]">
+				<div class="neu mb-16 grid grid-cols-1 gap-8 p-8 sm:p-12 lg:grid-cols-2 lg:gap-11">
+					<div class="border-b border-border pb-8 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-11">
+						<span class="eyebrow">Резюме</span>
+						<h2 class="mt-3.5 font-display text-[clamp(26px,3.4vw,38px)] font-semibold tracking-tight text-fg">
+							Открыт к новым проектам
+						</h2>
+					</div>
+					<div>
+						<p class="text-[16.5px] text-ink-3">Полное резюме с проектами, стеком и контактами — в одном файле.</p>
+						<div class="mt-6 flex flex-wrap items-center gap-4">
+							<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn btn-dark">Скачать резюме</a>
+							{
+								profile.contacts[0] && (
+									<a href={`mailto:${profile.contacts[0].value}`} class="btn-link">
+										Написать мне <Icon name="arrow" size={15} />
+									</a>
+								)
+							}
+						</div>
+					</div>
+				</div>
+
+				<div class="mb-7 max-w-xl">
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">05 /</span>Контакты</span>
+					<h2 class="mt-4 font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">Контакты</h2>
+				</div>
+				<div class="grid gap-4 sm:grid-cols-2">
+					{
+						profile.contacts.map((contact) => (
+							<a
+								href={contact.icon === 'mail' ? `mailto:${contact.value}` : contact.value}
+								target={contact.icon === 'mail' ? undefined : '_blank'}
+								rel={contact.icon === 'mail' ? undefined : 'noreferrer'}
+								class="neu flex items-center gap-4 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent/50"
+							>
+								<div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-white">
+									<Icon name={contact.icon} size={20} />
+								</div>
+								<div class="min-w-0">
+									<div class="font-mono text-[10.5px] uppercase tracking-wide text-ink-3">{contact.label}</div>
+									<div class="truncate font-display text-[15.5px] font-semibold text-fg">{contact.value}</div>
+								</div>
+							</a>
+						))
+					}
+				</div>
 			</div>
 		</section>
 	</main>
 	<Footer />
 </Layout>
+
+<style>
+	#work-grid {
+		display: grid;
+	}
+	#work-grid.is-list {
+		grid-template-columns: 1fr !important;
+	}
+	#work-grid.is-list :global(.proj-card) {
+		flex-direction: row;
+	}
+	#work-grid.is-list :global(.pc-media) {
+		width: 280px;
+		aspect-ratio: auto;
+	}
+	@media (max-width: 640px) {
+		#work-grid.is-list :global(.proj-card) {
+			flex-direction: column;
+		}
+		#work-grid.is-list :global(.pc-media) {
+			width: 100%;
+			aspect-ratio: 16 / 11;
+		}
+	}
+	#work-filters button.is-active {
+		background: var(--accent);
+		border-color: transparent;
+		color: #0c1018;
+		font-weight: 700;
+	}
+	#work-view button.is-active {
+		background: rgba(255, 255, 255, 0.08);
+		color: #f5f6f9;
+	}
+</style>
+
+<script>
+	const grid = document.getElementById('work-grid');
+	const filterButtons = document.querySelectorAll<HTMLButtonElement>('#work-filters button[data-filter]');
+	const viewButtons = document.querySelectorAll<HTMLButtonElement>('#work-view button[data-view]');
+
+	if (grid) {
+		filterButtons.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				filterButtons.forEach((b) => b.classList.remove('is-active'));
+				btn.classList.add('is-active');
+				const filter = btn.dataset.filter;
+				grid.querySelectorAll<HTMLElement>('.proj-card').forEach((card) => {
+					const show = filter === 'all' || card.dataset.cat === filter;
+					card.classList.toggle('hidden', !show);
+				});
+			});
+		});
+
+		viewButtons.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				viewButtons.forEach((b) => b.classList.remove('is-active'));
+				btn.classList.add('is-active');
+				grid.classList.toggle('is-list', btn.dataset.view === 'list');
+			});
+		});
+	}
+</script>

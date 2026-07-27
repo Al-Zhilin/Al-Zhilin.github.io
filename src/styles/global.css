@@ -37,4 +37,108 @@
   ::selection {
     @apply bg-accent/30 text-fg;
   }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink-3;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-0.5 w-5 shrink-0 bg-accent;
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border border-border bg-surface-2 px-6 py-3 font-display text-sm font-semibold text-fg transition-all hover:-translate-y-0.5 hover:border-white/15 hover:shadow-card;
+  }
+  .btn-dark {
+    @apply border-transparent bg-accent text-white shadow-glow hover:border-transparent hover:bg-accent-hover;
+  }
+  .btn-link {
+    @apply inline-flex items-center gap-2 py-3 font-display text-sm font-semibold text-ink-3 transition-colors hover:text-fg;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-3 py-1 font-mono text-[11.5px] tracking-wide text-white;
+  }
+  .chip-raised {
+    @apply border border-white/10 bg-surface-2 text-ink-2;
+  }
+
+  .neu {
+    @apply rounded-2xl border border-border bg-surface shadow-card;
+  }
+
+  /* --- admin form controls --- */
+  .field {
+    @apply mb-4 flex flex-col gap-2;
+  }
+  .field > label {
+    @apply font-mono text-[11px] uppercase tracking-wide text-ink-3;
+  }
+  .input,
+  .textarea,
+  select.input {
+    @apply w-full rounded-lg border border-border bg-black/25 px-3.5 py-2.5 font-sans text-[15px] text-fg outline-none transition-colors;
+  }
+  .input:focus,
+  .textarea:focus {
+    @apply border-accent/50 ring-2 ring-accent/10;
+  }
+  .textarea {
+    @apply min-h-[90px] resize-y;
+  }
+  .field-row {
+    @apply grid grid-cols-1 gap-3.5 sm:grid-cols-2;
+  }
+  .admin-list {
+    @apply flex flex-col gap-2.5;
+  }
+  .admin-row {
+    @apply flex items-center gap-3.5 rounded-lg border border-border bg-white/[0.03] px-3.5 py-3;
+  }
+  .admin-row .thumb {
+    @apply h-11 w-14 shrink-0 overflow-hidden rounded-md bg-surface-2;
+  }
+  .admin-row .thumb img {
+    @apply h-full w-full object-cover;
+  }
+  .admin-row .meta {
+    @apply min-w-0 flex-1;
+  }
+  .admin-row .meta .t {
+    @apply truncate font-display text-[15px] font-semibold text-fg;
+  }
+  .admin-row .meta .c {
+    @apply font-mono text-[11px] text-ink-3;
+  }
+  .admin-row .acts {
+    @apply flex shrink-0 gap-2;
+  }
+  .mini-btn {
+    @apply grid h-9 w-9 place-items-center rounded-lg border border-border text-ink-3 transition-colors hover:border-white/15 hover:text-fg;
+  }
+  .mini-btn-danger:hover {
+    @apply border-red-500/30 text-red-400;
+  }
+  .tab-btn {
+    @apply rounded-full border border-border px-4 py-2 font-display text-sm font-semibold text-ink-3 transition-colors hover:text-fg;
+  }
+  .tab-btn.is-active {
+    @apply border-transparent bg-accent text-white;
+  }
+  .dropzone {
+    @apply cursor-pointer rounded-lg border border-dashed border-border p-5 text-center font-mono text-xs text-ink-3 transition-colors hover:border-accent/50 hover:text-accent;
+  }
+  .dropzone.has-img {
+    @apply overflow-hidden p-0;
+  }
+  .dropzone.has-img img {
+    @apply block max-h-52 w-full object-cover;
+  }
 }

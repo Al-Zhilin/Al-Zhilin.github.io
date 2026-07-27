@@ -1,35 +1,53 @@
 ---
+import { catLabel } from '../lib/categories';
+
 interface Props {
 	title: string;
 	slug: string;
 	summary: string;
 	tags: string[];
-	date: string;
+	category?: string;
+	coverImage?: string;
+	index: number;
 }
 
-const { title, slug, summary, tags, date } = Astro.props;
-const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
-	year: 'numeric',
-	month: 'long',
-});
+const { title, slug, summary, tags, category, coverImage, index } = Astro.props;
 ---
 
 <a
 	href={`/projects/${slug}/`}
-	class="group flex flex-col gap-3 rounded-xl border border-border bg-surface p-6 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/60 hover:shadow-card-hover"
+	data-cat={category ?? 'other'}
+	class="proj-card group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-card-hover"
 >
-	<div class="flex items-center justify-between gap-4">
-		<h3 class="text-lg font-medium text-fg transition-colors group-hover:text-accent">{title}</h3>
-		<time datetime={date} class="shrink-0 font-mono text-sm text-muted">{formattedDate}</time>
-	</div>
-	<p class="text-sm text-muted">{summary}</p>
-	<ul class="mt-auto flex flex-wrap gap-2 pt-2">
+	<div class="pc-media relative aspect-[16/11] shrink-0 overflow-hidden bg-surface-2">
 		{
-			tags.map((tag) => (
-				<li class="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-sm text-muted">
-					{tag}
-				</li>
-			))
+			coverImage ? (
+				<img
+					src={coverImage}
+					alt={title}
+					loading="lazy"
+					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+				/>
+			) : (
+				<div class="grid h-full w-full place-items-center bg-[repeating-linear-gradient(45deg,rgba(255,255,255,0.03)_0_10px,transparent_10px_20px)] px-4 text-center font-mono text-[11px] tracking-wide text-ink-3">
+					{(tags[0] ?? 'PCB') + ' · IMAGE'}
+				</div>
+			)
 		}
-	</ul>
+		<span class="absolute left-3 top-3 rounded-full border border-border bg-black/55 px-2.5 py-1 font-mono text-[10.5px] tracking-wide text-ink-3 backdrop-blur-sm">
+			{String(index).padStart(2, '0')}
+		</span>
+	</div>
+	<div class="pc-body flex flex-1 flex-col p-5 sm:p-6">
+		<div class="mb-2.5 font-mono text-[10.5px] font-bold uppercase tracking-wide text-accent">{catLabel(category)}</div>
+		<h3 class="font-display text-lg font-semibold text-fg transition-colors group-hover:text-accent">{title}</h3>
+		<p class="mt-2 flex-1 text-sm text-ink-3">{summary}</p>
+		<div class="mt-4 flex flex-wrap gap-1.5">
+			{
+				tags.slice(0, 4).map((tag) => (
+					<span class="rounded-full bg-accent px-3 py-1 font-mono text-[11.5px] tracking-wide text-white">{tag}</span>
+				))
+			}
+		</div>
+	</div>
 </a>

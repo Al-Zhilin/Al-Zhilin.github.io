@@ -22,6 +22,11 @@ const { title, description = 'Личный сайт-визитка', noindex = f
 		<title>{title}</title>
 	</head>
 	<body>
-		<slot />
+		<div id="root">
+			<slot />
+		</div>
+		<script>
+			import '../scripts/floating-bg';
+		</script>
 	</body>
 </html>

@@ -45,6 +45,21 @@ export function encodeBase64Content(text: string): string {
   return btoa(binary);
 }
 
+/**
+ * Extracts the base64 payload from a `data:` URL (e.g. what
+ * FileReader.readAsDataURL produces) without re-encoding it as text —
+ * encodeBase64Content assumes a UTF-8 string and would corrupt binary
+ * image data.
+ */
+export function dataUrlToBase64(dataUrl: string): string {
+  const commaIndex = dataUrl.indexOf(",");
+  const header = commaIndex === -1 ? "" : dataUrl.slice(0, commaIndex);
+  if (commaIndex === -1 || !header.includes("base64")) {
+    throw new Error("Expected a base64-encoded data URL");
+  }
+  return dataUrl.slice(commaIndex + 1);
+}
+
 export interface GithubApiError {
   message: string;
   status: number;

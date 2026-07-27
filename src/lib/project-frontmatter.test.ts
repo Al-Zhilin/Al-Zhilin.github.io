@@ -43,6 +43,37 @@ describe("serializeProjectFrontmatter", () => {
     expect(result).toContain(`coverImage: ${JSON.stringify("/cover.png")}`);
   });
 
+  it("omits case-study fields when not provided", () => {
+    const result = serializeProjectFrontmatter(sample);
+    expect(result).not.toContain("category");
+    expect(result).not.toContain("lead");
+    expect(result).not.toContain("problem");
+    expect(result).not.toContain("solution");
+    expect(result).not.toContain("result");
+  });
+
+  it("includes case-study fields when provided", () => {
+    const result = serializeProjectFrontmatter({
+      ...sample,
+      category: "iot",
+      lead: "A compact node.",
+      problem: "Needed wireless telemetry.",
+      solution: ["Step one", "Step two"],
+      result: "3 years of battery life.",
+    });
+    expect(result).toContain(`category: ${JSON.stringify("iot")}`);
+    expect(result).toContain(`lead: ${JSON.stringify("A compact node.")}`);
+    expect(result).toContain(
+      `problem: ${JSON.stringify("Needed wireless telemetry.")}`,
+    );
+    expect(result).toContain(
+      `solution: ${JSON.stringify(["Step one", "Step two"])}`,
+    );
+    expect(result).toContain(
+      `result: ${JSON.stringify("3 years of battery life.")}`,
+    );
+  });
+
   it("appends the trimmed body after the frontmatter block", () => {
     const result = serializeProjectFrontmatter({
       ...sample,
@@ -64,6 +95,25 @@ describe("parseProjectMarkdown", () => {
     expect(frontmatter.githubUrl).toBe(sample.githubUrl);
     expect(frontmatter.date).toBe(sample.date);
     expect(body).toBe(sample.body);
+  });
+
+  it("round-trips case-study fields including the solution array", () => {
+    const withCaseStudy = {
+      ...sample,
+      category: "iot",
+      lead: "A compact node.",
+      problem: "Needed wireless telemetry.",
+      solution: ["Step one", "Step two"],
+      result: "3 years of battery life.",
+    };
+    const raw = serializeProjectFrontmatter(withCaseStudy);
+    const { frontmatter } = parseProjectMarkdown(raw);
+
+    expect(frontmatter.category).toBe("iot");
+    expect(frontmatter.lead).toBe("A compact node.");
+    expect(frontmatter.problem).toBe("Needed wireless telemetry.");
+    expect(frontmatter.solution).toEqual(["Step one", "Step two"]);
+    expect(frontmatter.result).toBe("3 years of battery life.");
   });
 
   it("returns an empty frontmatter object for content without delimiters", () => {

@@ -3,142 +3,237 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Админ-панель" noindex={true}>
-	<main class="mx-auto flex max-w-3xl flex-col gap-12 px-6 py-16">
-		<h1 class="text-2xl font-medium text-fg">Админ-панель</h1>
+	<main class="mx-auto flex max-w-3xl flex-col gap-8 px-6 pb-24 pt-28 sm:pt-32">
+		<div>
+			<h1 class="font-display text-2xl font-semibold text-fg">Админ-панель</h1>
+			<p class="mt-2 text-sm text-muted">
+				Редактируйте любой элемент сайта: тексты, навыки, опыт, контакты и проекты. Изменения сохраняются напрямую в
+				репозиторий через GitHub API.
+			</p>
+		</div>
 
-		<section class="flex flex-col gap-3 rounded-xl border border-border bg-surface p-6 shadow-card">
-			<h2 class="text-lg font-medium text-fg">GitHub токен</h2>
+		<section class="neu flex flex-col gap-3 p-6">
+			<h2 class="font-display text-lg font-medium text-fg">GitHub токен</h2>
 			<p class="text-sm text-muted">
 				Fine-grained personal access token с правами <code class="font-mono">contents: write</code> только на репозиторий
 				<code class="font-mono">Al-Zhilin/Al-Zhilin.github.io</code>. Хранится только в sessionStorage этой вкладки.
 			</p>
-			<div class="flex gap-3">
-				<input
-					id="token-input"
-					type="password"
-					placeholder="github_pat_..."
-					class="flex-1 rounded-lg border border-border bg-bg/60 px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-				/>
-				<button id="token-save" class="rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
-					Сохранить
-				</button>
-				<button id="token-clear" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
-					Очистить
-				</button>
+			<div class="flex flex-col gap-3 sm:flex-row">
+				<input id="token-input" type="password" placeholder="github_pat_..." class="input flex-1" />
+				<div class="flex gap-3">
+					<button id="token-save" class="btn btn-dark">Сохранить</button>
+					<button id="token-clear" class="btn">Очистить</button>
+				</div>
 			</div>
 			<p id="token-status" class="font-mono text-sm text-muted">Токен не задан</p>
 		</section>
 
-		<section class="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 shadow-card">
-			<h2 class="text-lg font-medium text-fg">Обо мне</h2>
-			<p id="profile-status" class="font-mono text-sm text-muted"></p>
-			<button id="profile-load" class="self-start rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
-				Загрузить текущий profile.json
-			</button>
+		<div id="admin-tabs" class="flex flex-wrap gap-2">
+			<button type="button" class="tab-btn is-active" data-tab="profile">Профиль</button>
+			<button type="button" class="tab-btn" data-tab="skills">Навыки</button>
+			<button type="button" class="tab-btn" data-tab="experience">Опыт</button>
+			<button type="button" class="tab-btn" data-tab="contacts">Контакты</button>
+			<button type="button" class="tab-btn" data-tab="projects">Проекты</button>
+		</div>
 
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Имя
-				<input id="profile-name" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Роль
-				<input id="profile-role" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Био (абзацы разделяются пустой строкой)
-				<textarea id="profile-bio" rows="6" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-				></textarea>
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Ссылка на резюме
-				<input id="profile-resume" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Email
-				<input id="profile-email" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				GitHub
-				<input id="profile-github" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<label class="flex flex-col gap-1 text-sm text-muted">
-				Telegram
-				<input id="profile-telegram" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-			</label>
-			<button id="profile-save" class="self-start rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
-				Сохранить profile.json
-			</button>
+		<!-- ===================== PROFILE / SITE TEXT ===================== -->
+		<section data-tab-panel="profile" class="neu flex flex-col gap-4 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="font-display text-lg font-medium text-fg">Профиль и тексты сайта</h2>
+				<button id="profile-load" class="btn">Загрузить с GitHub</button>
+			</div>
+			<p id="profile-status" class="font-mono text-sm text-muted"></p>
+
+			<div class="field-row">
+				<label class="field"><span>Имя</span><input id="profile-name" type="text" class="input" /></label>
+				<label class="field"><span>Роль</span><input id="profile-role" type="text" class="input" /></label>
+			</div>
+			<label class="field"><span>Ссылка на резюме</span><input id="profile-resume" type="text" class="input" /></label>
+
+			<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Hero</h3>
+			<div class="field-row">
+				<label class="field"><span>Надзаголовок (eyebrow)</span><input id="hero-eyebrow" type="text" class="input" /></label>
+			</div>
+			<div class="field-row">
+				<label class="field"><span>Имя — часть 1</span><input id="hero-titleA" type="text" class="input" /></label>
+				<label class="field"><span>Имя — часть 2</span><input id="hero-titleB" type="text" class="input" /></label>
+			</div>
+			<label class="field"><span>Подзаголовок</span><textarea id="hero-sub" rows="3" class="textarea"></textarea></label>
+
+			<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Обо мне</h3>
+			<div class="field-row">
+				<label class="field"><span>Надзаголовок (eyebrow)</span><input id="about-eyebrow" type="text" class="input" /></label>
+				<label class="field"><span>Заголовок</span><input id="about-title" type="text" class="input" /></label>
+			</div>
+			<label class="field"><span>Вступление</span><textarea id="about-lead" rows="3" class="textarea"></textarea></label>
+			<label class="field"><span>Абзац 2</span><textarea id="about-p2" rows="3" class="textarea"></textarea></label>
+			<label class="field"><span>Абзац 3</span><textarea id="about-p3" rows="3" class="textarea"></textarea></label>
+
+			<div>
+				<button id="profile-save" class="btn btn-dark">Сохранить профиль</button>
+			</div>
 		</section>
 
-		<section class="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 shadow-card">
-			<h2 class="text-lg font-medium text-fg">Проекты</h2>
-			<p id="projects-status" class="font-mono text-sm text-muted"></p>
-			<button id="projects-load" class="self-start rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
-				Загрузить список проектов
-			</button>
-			<ul id="projects-list" class="flex flex-col gap-2"></ul>
-
-			<div class="mt-4 flex flex-col gap-3 border-t border-border pt-4">
-				<h3 class="text-base font-medium text-fg">Импорт из GitHub repo</h3>
+		<!-- ===================== SKILLS ===================== -->
+		<section data-tab-panel="skills" class="neu hidden flex-col gap-4 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="font-display text-lg font-medium text-fg">Навыки</h2>
+				<button id="skills-load" class="btn">Загрузить с GitHub</button>
+			</div>
+			<p id="skills-status" class="font-mono text-sm text-muted"></p>
+			<div id="skills-list" class="admin-list"></div>
+			<div class="border-t border-border pt-4">
+				<h3 class="mb-3 font-mono text-xs uppercase tracking-wide text-ink-3">Добавить / редактировать карточку</h3>
+				<input type="hidden" id="skill-index" value="-1" />
+				<div class="field-row">
+					<label class="field">
+						<span>Иконка</span>
+						<select id="skill-icon" class="input">
+							<option value="cpu">cpu</option>
+							<option value="rtos">rtos</option>
+							<option value="wave">wave</option>
+							<option value="pcb">pcb</option>
+							<option value="tool">tool</option>
+							<option value="bolt">bolt</option>
+						</select>
+					</label>
+					<label class="field"><span>Название</span><input id="skill-title" type="text" class="input" /></label>
+				</div>
+				<label class="field"><span>Описание</span><textarea id="skill-desc" rows="2" class="textarea"></textarea></label>
+				<label class="field"><span>Теги (через запятую)</span><input id="skill-tags" type="text" class="input" placeholder="ESP32, FreeRTOS" /></label>
 				<div class="flex gap-3">
-					<input
-						id="import-repo"
-						type="text"
-						placeholder="owner/repo"
-						class="flex-1 rounded-lg border border-border bg-bg/60 px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-					/>
-					<button id="import-run" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
-						Импортировать
-					</button>
+					<button id="skill-save" class="btn btn-dark">Сохранить карточку</button>
+					<button id="skill-reset" class="btn">Новая карточка</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- ===================== EXPERIENCE ===================== -->
+		<section data-tab-panel="experience" class="neu hidden flex-col gap-4 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="font-display text-lg font-medium text-fg">Опыт разработки</h2>
+				<button id="exp-load" class="btn">Загрузить с GitHub</button>
+			</div>
+			<p id="exp-status" class="font-mono text-sm text-muted"></p>
+			<div id="exp-list" class="admin-list"></div>
+			<div class="border-t border-border pt-4">
+				<h3 class="mb-3 font-mono text-xs uppercase tracking-wide text-ink-3">Добавить / редактировать запись</h3>
+				<input type="hidden" id="exp-index" value="-1" />
+				<div class="field-row">
+					<label class="field"><span>Даты (напр. 2024 — сейчас)</span><input id="exp-when" type="text" class="input" /></label>
+					<label class="field">
+						<span>Статус</span>
+						<span class="flex h-[42px] items-center gap-2">
+							<input id="exp-current" type="checkbox" />
+							<span class="font-mono text-[13px] text-muted">Текущий этап</span>
+						</span>
+					</label>
+				</div>
+				<div class="field-row">
+					<label class="field"><span>Должность / роль</span><input id="exp-role" type="text" class="input" /></label>
+					<label class="field"><span>Компания / проект</span><input id="exp-company" type="text" class="input" /></label>
+				</div>
+				<label class="field"><span>Описание</span><textarea id="exp-desc" rows="3" class="textarea"></textarea></label>
+				<label class="field"><span>Теги (через запятую)</span><input id="exp-tags" type="text" class="input" /></label>
+				<div class="flex gap-3">
+					<button id="exp-save" class="btn btn-dark">Сохранить запись</button>
+					<button id="exp-reset" class="btn">Новая запись</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- ===================== CONTACTS ===================== -->
+		<section data-tab-panel="contacts" class="neu hidden flex-col gap-4 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="font-display text-lg font-medium text-fg">Контакты</h2>
+				<button id="contacts-load" class="btn">Загрузить с GitHub</button>
+			</div>
+			<p id="contacts-status" class="font-mono text-sm text-muted"></p>
+			<div id="contacts-list" class="admin-list"></div>
+			<div class="border-t border-border pt-4">
+				<h3 class="mb-3 font-mono text-xs uppercase tracking-wide text-ink-3">Добавить / редактировать контакт</h3>
+				<input type="hidden" id="contact-index" value="-1" />
+				<div class="field-row">
+					<label class="field"><span>Название</span><input id="contact-label" type="text" class="input" placeholder="Email" /></label>
+					<label class="field"><span>Значение</span><input id="contact-value" type="text" class="input" placeholder="you@example.com" /></label>
+				</div>
+				<label class="field">
+					<span>Иконка</span>
+					<select id="contact-icon" class="input">
+						<option value="mail">mail</option>
+						<option value="send">send</option>
+						<option value="git">git</option>
+						<option value="pin">pin</option>
+						<option value="globe">globe</option>
+						<option value="chip">chip</option>
+					</select>
+				</label>
+				<div class="flex gap-3">
+					<button id="contact-save" class="btn btn-dark">Сохранить контакт</button>
+					<button id="contact-reset" class="btn">Новый контакт</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- ===================== PROJECTS ===================== -->
+		<section data-tab-panel="projects" class="neu hidden flex-col gap-4 p-6">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="font-display text-lg font-medium text-fg">Проекты</h2>
+				<button id="projects-load" class="btn">Загрузить список</button>
+			</div>
+			<p id="projects-status" class="font-mono text-sm text-muted"></p>
+			<div id="projects-list" class="admin-list"></div>
+
+			<div class="flex flex-col gap-3 border-t border-border pt-4">
+				<h3 class="font-mono text-xs uppercase tracking-wide text-ink-3">Импорт из GitHub repo</h3>
+				<div class="flex flex-col gap-3 sm:flex-row">
+					<input id="import-repo" type="text" placeholder="owner/repo" class="input flex-1" />
+					<button id="import-run" class="btn">Импортировать</button>
 				</div>
 			</div>
 
-			<form id="project-form" class="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+			<form id="project-form" class="mt-2 flex flex-col gap-3 border-t border-border pt-4">
 				<input type="hidden" id="project-sha" />
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Название
-					<input id="project-title" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
+				<label class="field"><span>Название</span><input id="project-title" type="text" required class="input" /></label>
+				<label class="field"><span>Slug (URL)</span><input id="project-slug" type="text" required class="input font-mono" /></label>
+
+				<div class="field-row">
+					<label class="field">
+						<span>Категория</span>
+						<select id="project-category" class="input">
+							<option value="">—</option>
+							<option value="firmware">Прошивки</option>
+							<option value="hardware">Платы</option>
+							<option value="iot">IoT</option>
+							<option value="tools">Инструменты</option>
+						</select>
+					</label>
+					<label class="field"><span>Дата</span><input id="project-date" type="text" required placeholder="2026-01-01" class="input font-mono" /></label>
+				</div>
+
+				<label class="field"><span>Краткое описание (для карточки)</span><textarea id="project-summary" rows="2" required class="textarea"></textarea></label>
+				<label class="field"><span>Теги (через запятую)</span><input id="project-tags" type="text" class="input font-mono" /></label>
+				<label class="field"><span>GitHub URL</span><input id="project-github-url" type="text" required class="input" /></label>
+
+				<label class="field">
+					<span>Обложка проекта</span>
+					<div id="project-dropzone" class="dropzone">Перетащите изображение или нажмите для выбора</div>
+					<input id="project-cover-file" type="file" accept="image/*" class="hidden" />
+					<input id="project-cover" type="text" class="input mt-2" placeholder="/uploads/... или внешняя ссылка" />
 				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Slug (URL)
-					<input id="project-slug" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Краткое описание (для карточки)
-					<textarea id="project-summary" rows="2" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-					></textarea>
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Теги (через запятую)
-					<input id="project-tags" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					GitHub URL
-					<input id="project-github-url" type="text" required class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Обложка (необязательно)
-					<input id="project-cover" type="text" class="rounded-lg border border-border bg-bg/60 px-3 py-2 text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Дата
-					<input id="project-date" type="text" required placeholder="2026-01-01" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20" />
-				</label>
-				<label class="flex flex-col gap-1 text-sm text-muted">
-					Описание (markdown)
-					<textarea id="project-body" rows="10" class="rounded-lg border border-border bg-bg/60 px-3 py-2 font-mono text-sm text-fg outline-none transition-colors focus:border-accent focus:ring-2 focus:ring-accent/20"
-					></textarea>
-				</label>
-				<div class="flex gap-3">
-					<button type="submit" id="project-save" class="rounded-lg border border-accent bg-accent px-4 py-2 text-sm text-bg shadow-glow transition-all hover:-translate-y-0.5 hover:border-accent-hover hover:bg-accent-hover">
-						Сохранить проект
-					</button>
-					<button type="button" id="project-delete" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-red-500 hover:text-red-400 disabled:pointer-events-none disabled:opacity-40" disabled>
-						Удалить проект
-					</button>
-					<button type="button" id="project-reset" class="rounded-lg border border-border bg-surface-2 px-4 py-2 text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent">
-						Новый проект
-					</button>
+
+				<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Кейс (необязательно)</h3>
+				<label class="field"><span>Вступление</span><textarea id="project-lead" rows="2" class="textarea"></textarea></label>
+				<label class="field"><span>Задача</span><textarea id="project-problem" rows="2" class="textarea"></textarea></label>
+				<label class="field"><span>Решение (по пункту на строку)</span><textarea id="project-solution" rows="4" class="textarea"></textarea></label>
+				<label class="field"><span>Результат</span><textarea id="project-result" rows="2" class="textarea"></textarea></label>
+
+				<label class="field"><span>Описание (markdown)</span><textarea id="project-body" rows="10" class="textarea font-mono text-sm"></textarea></label>
+
+				<div class="flex flex-wrap gap-3">
+					<button type="submit" id="project-save" class="btn btn-dark">Сохранить проект</button>
+					<button type="button" id="project-delete" class="btn disabled:pointer-events-none disabled:opacity-40" disabled>Удалить проект</button>
+					<button type="button" id="project-reset" class="btn">Новый проект</button>
 				</div>
 			</form>
 		</section>
@@ -148,14 +243,20 @@ import Layout from '../../layouts/Layout.astro';
 <script>
 	import { slugify } from '../../lib/slug';
 	import { serializeProjectFrontmatter, parseProjectMarkdown, type ProjectFormData } from '../../lib/project-frontmatter';
-	import { parseRepoResponse, decodeBase64Content, encodeBase64Content, parseApiError } from '../../lib/github-api';
-	import { serializeProfile, bioTextToParagraphs, bioParagraphsToText, type ProfileData } from '../../lib/profile';
+	import { parseRepoResponse, decodeBase64Content, encodeBase64Content, dataUrlToBase64, parseApiError } from '../../lib/github-api';
+	import { serializeProfile, type ProfileData, type ProfileContact } from '../../lib/profile';
+	import { serializeSkills, type SkillCard } from '../../lib/skills';
+	import { serializeExperience, type ExperienceEntry } from '../../lib/experience';
+	import { tagsArrayToText, tagsTextToArray } from '../../lib/tags';
 
 	const REPO_OWNER = 'Al-Zhilin';
 	const REPO_NAME = 'Al-Zhilin.github.io';
 	const API_BASE = 'https://api.github.com';
 	const PROJECTS_PATH = 'src/content/projects';
 	const PROFILE_PATH = 'src/data/profile.json';
+	const SKILLS_PATH = 'src/data/skills.json';
+	const EXPERIENCE_PATH = 'src/data/experience.json';
+	const UPLOADS_PATH = 'public/uploads';
 	const BRANCH = 'main';
 	const TOKEN_KEY = 'gh_pat';
 
@@ -187,15 +288,34 @@ import Layout from '../../layouts/Layout.astro';
 			const error = parseApiError(res.status, json);
 			throw new Error(error.message);
 		}
+		if (res.status === 204) return null;
 		return res.json();
 	}
+
+	function genId(prefix: string): string {
+		return `${prefix}_${Date.now().toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`;
+	}
+
+	// --- Tabs ---
+	const tabButtons = document.querySelectorAll<HTMLButtonElement>('#admin-tabs button[data-tab]');
+	const tabPanels = document.querySelectorAll<HTMLElement>('[data-tab-panel]');
+	tabButtons.forEach((btn) => {
+		btn.addEventListener('click', () => {
+			tabButtons.forEach((b) => b.classList.remove('is-active'));
+			btn.classList.add('is-active');
+			tabPanels.forEach((panel) => {
+				const active = panel.dataset.tabPanel === btn.dataset.tab;
+				panel.classList.toggle('hidden', !active);
+				panel.classList.toggle('flex', active);
+			});
+		});
+	});
 
 	// --- Token ---
 	function refreshTokenStatus() {
 		const token = getToken();
 		$('token-status').textContent = token ? `Токен сохранён (${token.slice(0, 8)}…)` : 'Токен не задан';
 	}
-
 	$('token-save').addEventListener('click', () => {
 		const value = $<HTMLInputElement>('token-input').value.trim();
 		if (!value) return;
@@ -203,31 +323,62 @@ import Layout from '../../layouts/Layout.astro';
 		$<HTMLInputElement>('token-input').value = '';
 		refreshTokenStatus();
 	});
-
 	$('token-clear').addEventListener('click', () => {
 		sessionStorage.removeItem(TOKEN_KEY);
 		refreshTokenStatus();
 	});
-
 	refreshTokenStatus();
 
-	// --- Profile ---
+	// ===================== PROFILE + CONTACTS (shared src/data/profile.json) =====================
+	let profileData: ProfileData | null = null;
 	let profileSha: string | null = null;
+
+	function fillProfileForm(data: ProfileData) {
+		$<HTMLInputElement>('profile-name').value = data.name;
+		$<HTMLInputElement>('profile-role').value = data.role;
+		$<HTMLInputElement>('profile-resume').value = data.resumeUrl;
+		$<HTMLInputElement>('hero-eyebrow').value = data.hero.eyebrow;
+		$<HTMLInputElement>('hero-titleA').value = data.hero.titleA;
+		$<HTMLInputElement>('hero-titleB').value = data.hero.titleB;
+		$<HTMLTextAreaElement>('hero-sub').value = data.hero.sub;
+		$<HTMLInputElement>('about-eyebrow').value = data.about.eyebrow;
+		$<HTMLInputElement>('about-title').value = data.about.title;
+		$<HTMLTextAreaElement>('about-lead').value = data.about.lead;
+		$<HTMLTextAreaElement>('about-p2').value = data.about.p2;
+		$<HTMLTextAreaElement>('about-p3').value = data.about.p3;
+	}
+
+	async function loadProfile(): Promise<ProfileData> {
+		const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}?ref=${BRANCH}`);
+		profileSha = json.sha;
+		profileData = JSON.parse(decodeBase64Content(json)) as ProfileData;
+		return profileData;
+	}
+
+	async function saveProfile(status: HTMLElement) {
+		if (!profileData) throw new Error('Сначала загрузите профиль');
+		const content = serializeProfile(profileData);
+		status.textContent = 'Сохранение...';
+		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}`, {
+			method: 'PUT',
+			body: JSON.stringify({
+				message: `Update profile.json`,
+				content: encodeBase64Content(content),
+				sha: profileSha ?? undefined,
+				branch: BRANCH,
+			}),
+		});
+		profileSha = res.content.sha;
+		status.textContent = 'Сохранено';
+	}
 
 	$('profile-load').addEventListener('click', async () => {
 		const status = $('profile-status');
 		status.textContent = 'Загрузка...';
 		try {
-			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}?ref=${BRANCH}`);
-			profileSha = json.sha;
-			const data: ProfileData = JSON.parse(decodeBase64Content(json));
-			$<HTMLInputElement>('profile-name').value = data.name;
-			$<HTMLInputElement>('profile-role').value = data.role;
-			$<HTMLTextAreaElement>('profile-bio').value = bioParagraphsToText(data.bio);
-			$<HTMLInputElement>('profile-resume').value = data.resumeUrl;
-			$<HTMLInputElement>('profile-email').value = data.contacts.email;
-			$<HTMLInputElement>('profile-github').value = data.contacts.github;
-			$<HTMLInputElement>('profile-telegram').value = data.contacts.telegram;
+			const data = await loadProfile();
+			fillProfileForm(data);
+			renderContactsList();
 			status.textContent = 'Загружено';
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
@@ -237,35 +388,337 @@ import Layout from '../../layouts/Layout.astro';
 	$('profile-save').addEventListener('click', async () => {
 		const status = $('profile-status');
 		try {
-			const data: ProfileData = {
-				name: $<HTMLInputElement>('profile-name').value.trim(),
-				role: $<HTMLInputElement>('profile-role').value.trim(),
-				bio: bioTextToParagraphs($<HTMLTextAreaElement>('profile-bio').value),
-				resumeUrl: $<HTMLInputElement>('profile-resume').value.trim(),
-				contacts: {
-					email: $<HTMLInputElement>('profile-email').value.trim(),
-					github: $<HTMLInputElement>('profile-github').value.trim(),
-					telegram: $<HTMLInputElement>('profile-telegram').value.trim(),
-				},
+			if (!profileData) throw new Error('Сначала загрузите профиль');
+			profileData.name = $<HTMLInputElement>('profile-name').value.trim();
+			profileData.role = $<HTMLInputElement>('profile-role').value.trim();
+			profileData.resumeUrl = $<HTMLInputElement>('profile-resume').value.trim();
+			profileData.hero = {
+				eyebrow: $<HTMLInputElement>('hero-eyebrow').value.trim(),
+				titleA: $<HTMLInputElement>('hero-titleA').value,
+				titleB: $<HTMLInputElement>('hero-titleB').value,
+				sub: $<HTMLTextAreaElement>('hero-sub').value.trim(),
 			};
-			const content = serializeProfile(data);
-			status.textContent = 'Сохранение...';
-			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}`, {
-				method: 'PUT',
-				body: JSON.stringify({
-					message: `Update profile: ${data.name}`,
-					content: encodeBase64Content(content),
-					sha: profileSha ?? undefined,
-					branch: BRANCH,
-				}),
-			});
-			status.textContent = 'Сохранено';
+			profileData.about = {
+				eyebrow: $<HTMLInputElement>('about-eyebrow').value.trim(),
+				title: $<HTMLInputElement>('about-title').value,
+				lead: $<HTMLTextAreaElement>('about-lead').value.trim(),
+				p2: $<HTMLTextAreaElement>('about-p2').value.trim(),
+				p3: $<HTMLTextAreaElement>('about-p3').value.trim(),
+			};
+			await saveProfile(status);
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
 	});
 
-	// --- Projects list ---
+	// --- Contacts (live inside profileData.contacts) ---
+	function renderContactsList() {
+		const list = $('contacts-list');
+		list.innerHTML = '';
+		if (!profileData) return;
+		profileData.contacts.forEach((contact, i) => {
+			const row = document.createElement('div');
+			row.className = 'admin-row';
+			row.innerHTML = `
+				<div class="meta"><div class="t">${escapeHtml(contact.label)}</div><div class="c">${escapeHtml(contact.value)} · ${escapeHtml(contact.icon)}</div></div>
+				<div class="acts">
+					<button class="mini-btn" data-act="edit" title="edit">✎</button>
+					<button class="mini-btn mini-btn-danger" data-act="delete" title="delete">✕</button>
+				</div>`;
+			row.querySelector('[data-act="edit"]')?.addEventListener('click', () => startEditContact(i));
+			row.querySelector('[data-act="delete"]')?.addEventListener('click', () => deleteContact(i));
+			list.append(row);
+		});
+	}
+
+	function startEditContact(i: number) {
+		if (!profileData) return;
+		const c = profileData.contacts[i];
+		$<HTMLInputElement>('contact-index').value = String(i);
+		$<HTMLInputElement>('contact-label').value = c.label;
+		$<HTMLInputElement>('contact-value').value = c.value;
+		$<HTMLSelectElement>('contact-icon').value = c.icon;
+	}
+
+	function resetContactForm() {
+		$<HTMLInputElement>('contact-index').value = '-1';
+		$<HTMLInputElement>('contact-label').value = '';
+		$<HTMLInputElement>('contact-value').value = '';
+		$<HTMLSelectElement>('contact-icon').value = 'mail';
+	}
+	$('contact-reset').addEventListener('click', resetContactForm);
+
+	async function deleteContact(i: number) {
+		const status = $('contacts-status');
+		try {
+			if (!profileData) throw new Error('Сначала загрузите профиль');
+			profileData.contacts.splice(i, 1);
+			await saveProfile(status);
+			renderContactsList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	$('contact-save').addEventListener('click', async () => {
+		const status = $('contacts-status');
+		try {
+			if (!profileData) throw new Error('Сначала загрузите профиль');
+			const idx = Number($<HTMLInputElement>('contact-index').value);
+			const rec: ProfileContact = {
+				id: idx >= 0 ? profileData.contacts[idx].id : genId('c'),
+				label: $<HTMLInputElement>('contact-label').value.trim(),
+				value: $<HTMLInputElement>('contact-value').value.trim(),
+				icon: $<HTMLSelectElement>('contact-icon').value,
+			};
+			if (idx >= 0) profileData.contacts[idx] = rec;
+			else profileData.contacts.push(rec);
+			await saveProfile(status);
+			renderContactsList();
+			resetContactForm();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	$('contacts-load').addEventListener('click', async () => {
+		const status = $('contacts-status');
+		status.textContent = 'Загрузка...';
+		try {
+			await loadProfile();
+			renderContactsList();
+			status.textContent = 'Загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	// ===================== SKILLS =====================
+	let skillsData: SkillCard[] = [];
+	let skillsSha: string | null = null;
+
+	function renderSkillsList() {
+		const list = $('skills-list');
+		list.innerHTML = '';
+		skillsData.forEach((card, i) => {
+			const row = document.createElement('div');
+			row.className = 'admin-row';
+			row.innerHTML = `
+				<div class="meta"><div class="t">${escapeHtml(card.title)}</div><div class="c">${escapeHtml(card.icon)} · ${card.tags.length} тегов</div></div>
+				<div class="acts">
+					<button class="mini-btn" data-act="edit" title="edit">✎</button>
+					<button class="mini-btn mini-btn-danger" data-act="delete" title="delete">✕</button>
+				</div>`;
+			row.querySelector('[data-act="edit"]')?.addEventListener('click', () => startEditSkill(i));
+			row.querySelector('[data-act="delete"]')?.addEventListener('click', () => deleteSkill(i));
+			list.append(row);
+		});
+	}
+
+	function startEditSkill(i: number) {
+		const c = skillsData[i];
+		$<HTMLInputElement>('skill-index').value = String(i);
+		$<HTMLSelectElement>('skill-icon').value = c.icon;
+		$<HTMLInputElement>('skill-title').value = c.title;
+		$<HTMLTextAreaElement>('skill-desc').value = c.desc;
+		$<HTMLInputElement>('skill-tags').value = tagsArrayToText(c.tags);
+	}
+	function resetSkillForm() {
+		$<HTMLInputElement>('skill-index').value = '-1';
+		$<HTMLSelectElement>('skill-icon').value = 'cpu';
+		$<HTMLInputElement>('skill-title').value = '';
+		$<HTMLTextAreaElement>('skill-desc').value = '';
+		$<HTMLInputElement>('skill-tags').value = '';
+	}
+	$('skill-reset').addEventListener('click', resetSkillForm);
+
+	async function saveSkillsFile(status: HTMLElement) {
+		const content = serializeSkills(skillsData);
+		status.textContent = 'Сохранение...';
+		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SKILLS_PATH}`, {
+			method: 'PUT',
+			body: JSON.stringify({
+				message: 'Update skills.json',
+				content: encodeBase64Content(content),
+				sha: skillsSha ?? undefined,
+				branch: BRANCH,
+			}),
+		});
+		skillsSha = res.content.sha;
+		status.textContent = 'Сохранено';
+	}
+
+	async function deleteSkill(i: number) {
+		const status = $('skills-status');
+		try {
+			skillsData.splice(i, 1);
+			await saveSkillsFile(status);
+			renderSkillsList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	$('skill-save').addEventListener('click', async () => {
+		const status = $('skills-status');
+		try {
+			const idx = Number($<HTMLInputElement>('skill-index').value);
+			const rec: SkillCard = {
+				icon: $<HTMLSelectElement>('skill-icon').value,
+				title: $<HTMLInputElement>('skill-title').value.trim(),
+				desc: $<HTMLTextAreaElement>('skill-desc').value.trim(),
+				tags: tagsTextToArray($<HTMLInputElement>('skill-tags').value),
+			};
+			if (idx >= 0) skillsData[idx] = rec;
+			else skillsData.push(rec);
+			await saveSkillsFile(status);
+			renderSkillsList();
+			resetSkillForm();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	$('skills-load').addEventListener('click', async () => {
+		const status = $('skills-status');
+		status.textContent = 'Загрузка...';
+		try {
+			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SKILLS_PATH}?ref=${BRANCH}`);
+			skillsSha = json.sha;
+			skillsData = JSON.parse(decodeBase64Content(json));
+			renderSkillsList();
+			status.textContent = 'Загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	// ===================== EXPERIENCE =====================
+	let expData: ExperienceEntry[] = [];
+	let expSha: string | null = null;
+
+	function renderExpList() {
+		const list = $('exp-list');
+		list.innerHTML = '';
+		expData.forEach((entry, i) => {
+			const row = document.createElement('div');
+			row.className = 'admin-row';
+			row.innerHTML = `
+				<div class="meta"><div class="t">${escapeHtml(entry.role)} — ${escapeHtml(entry.company)}</div><div class="c">${escapeHtml(entry.when)}${entry.current ? ' · текущий' : ''}</div></div>
+				<div class="acts">
+					<button class="mini-btn" data-act="up" title="up">↑</button>
+					<button class="mini-btn" data-act="down" title="down">↓</button>
+					<button class="mini-btn" data-act="edit" title="edit">✎</button>
+					<button class="mini-btn mini-btn-danger" data-act="delete" title="delete">✕</button>
+				</div>`;
+			row.querySelector('[data-act="up"]')?.addEventListener('click', () => moveExp(i, -1));
+			row.querySelector('[data-act="down"]')?.addEventListener('click', () => moveExp(i, 1));
+			row.querySelector('[data-act="edit"]')?.addEventListener('click', () => startEditExp(i));
+			row.querySelector('[data-act="delete"]')?.addEventListener('click', () => deleteExp(i));
+			list.append(row);
+		});
+	}
+
+	function startEditExp(i: number) {
+		const e = expData[i];
+		$<HTMLInputElement>('exp-index').value = String(i);
+		$<HTMLInputElement>('exp-when').value = e.when;
+		$<HTMLInputElement>('exp-current').checked = e.current;
+		$<HTMLInputElement>('exp-role').value = e.role;
+		$<HTMLInputElement>('exp-company').value = e.company;
+		$<HTMLTextAreaElement>('exp-desc').value = e.desc;
+		$<HTMLInputElement>('exp-tags').value = tagsArrayToText(e.tags);
+	}
+	function resetExpForm() {
+		$<HTMLInputElement>('exp-index').value = '-1';
+		$<HTMLInputElement>('exp-when').value = '';
+		$<HTMLInputElement>('exp-current').checked = false;
+		$<HTMLInputElement>('exp-role').value = '';
+		$<HTMLInputElement>('exp-company').value = '';
+		$<HTMLTextAreaElement>('exp-desc').value = '';
+		$<HTMLInputElement>('exp-tags').value = '';
+	}
+	$('exp-reset').addEventListener('click', resetExpForm);
+
+	async function saveExpFile(status: HTMLElement) {
+		const content = serializeExperience(expData);
+		status.textContent = 'Сохранение...';
+		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${EXPERIENCE_PATH}`, {
+			method: 'PUT',
+			body: JSON.stringify({
+				message: 'Update experience.json',
+				content: encodeBase64Content(content),
+				sha: expSha ?? undefined,
+				branch: BRANCH,
+			}),
+		});
+		expSha = res.content.sha;
+		status.textContent = 'Сохранено';
+	}
+
+	async function moveExp(i: number, dir: number) {
+		const status = $('exp-status');
+		const j = i + dir;
+		if (j < 0 || j >= expData.length) return;
+		try {
+			const tmp = expData[i];
+			expData[i] = expData[j];
+			expData[j] = tmp;
+			await saveExpFile(status);
+			renderExpList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	async function deleteExp(i: number) {
+		const status = $('exp-status');
+		try {
+			expData.splice(i, 1);
+			await saveExpFile(status);
+			renderExpList();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	$('exp-save').addEventListener('click', async () => {
+		const status = $('exp-status');
+		try {
+			const idx = Number($<HTMLInputElement>('exp-index').value);
+			const rec: ExperienceEntry = {
+				when: $<HTMLInputElement>('exp-when').value.trim(),
+				current: $<HTMLInputElement>('exp-current').checked,
+				role: $<HTMLInputElement>('exp-role').value.trim(),
+				company: $<HTMLInputElement>('exp-company').value.trim(),
+				desc: $<HTMLTextAreaElement>('exp-desc').value.trim(),
+				tags: tagsTextToArray($<HTMLInputElement>('exp-tags').value),
+			};
+			if (idx >= 0) expData[idx] = rec;
+			else expData.unshift(rec);
+			await saveExpFile(status);
+			renderExpList();
+			resetExpForm();
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	$('exp-load').addEventListener('click', async () => {
+		const status = $('exp-status');
+		status.textContent = 'Загрузка...';
+		try {
+			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${EXPERIENCE_PATH}?ref=${BRANCH}`);
+			expSha = json.sha;
+			expData = JSON.parse(decodeBase64Content(json));
+			renderExpList();
+			status.textContent = 'Загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	});
+
+	// ===================== PROJECTS =====================
 	async function loadProjectsList() {
 		const status = $('projects-status');
 		const list = $('projects-list');
@@ -276,24 +729,17 @@ import Layout from '../../layouts/Layout.astro';
 				`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROJECTS_PATH}?ref=${BRANCH}`
 			);
 			for (const file of files) {
-				const li = document.createElement('li');
-				li.className = 'flex items-center justify-between rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm';
-				const name = document.createElement('span');
-				name.className = 'font-mono text-fg';
-				name.textContent = file.name;
-				const editButton = document.createElement('button');
-				editButton.className = 'rounded-md border border-border px-3 py-1 text-xs text-fg transition-colors hover:border-accent';
-				editButton.textContent = 'Редактировать';
-				editButton.addEventListener('click', () => loadProjectIntoForm(file.path));
-				li.append(name, editButton);
-				list.append(li);
+				const row = document.createElement('div');
+				row.className = 'admin-row';
+				row.innerHTML = `<div class="meta"><div class="t">${escapeHtml(file.name)}</div></div><div class="acts"><button class="mini-btn" title="edit">✎</button></div>`;
+				row.querySelector('button')?.addEventListener('click', () => loadProjectIntoForm(file.path));
+				list.append(row);
 			}
 			status.textContent = `${files.length} проект(ов)`;
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
 	}
-
 	$('projects-load').addEventListener('click', loadProjectsList);
 
 	let currentProjectPath: string | null = null;
@@ -316,20 +762,40 @@ import Layout from '../../layouts/Layout.astro';
 			$<HTMLInputElement>('project-tags').value = Array.isArray(frontmatter.tags) ? frontmatter.tags.join(', ') : '';
 			$<HTMLInputElement>('project-github-url').value = String(frontmatter.githubUrl ?? '');
 			$<HTMLInputElement>('project-cover').value = String(frontmatter.coverImage ?? '');
+			$<HTMLSelectElement>('project-category').value = String(frontmatter.category ?? '');
 			$<HTMLInputElement>('project-date').value = String(frontmatter.date ?? '');
+			$<HTMLTextAreaElement>('project-lead').value = String(frontmatter.lead ?? '');
+			$<HTMLTextAreaElement>('project-problem').value = String(frontmatter.problem ?? '');
+			$<HTMLTextAreaElement>('project-solution').value = Array.isArray(frontmatter.solution) ? frontmatter.solution.join('\n') : '';
+			$<HTMLTextAreaElement>('project-result').value = String(frontmatter.result ?? '');
 			$<HTMLTextAreaElement>('project-body').value = body;
 			$<HTMLButtonElement>('project-delete').disabled = false;
+			updateCoverPreview();
 			status.textContent = `Редактируется: ${path}`;
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
 	}
 
+	function updateCoverPreview() {
+		const zone = $('project-dropzone');
+		const url = $<HTMLInputElement>('project-cover').value.trim();
+		if (url) {
+			zone.classList.add('has-img');
+			zone.innerHTML = `<img src="${escapeAttr(url)}" alt="preview" />`;
+		} else {
+			zone.classList.remove('has-img');
+			zone.textContent = 'Перетащите изображение или нажмите для выбора';
+		}
+	}
+	$('project-cover').addEventListener('input', updateCoverPreview);
+
 	$('project-reset').addEventListener('click', () => {
 		currentProjectPath = null;
 		currentProjectSha = null;
 		$<HTMLFormElement>('project-form').reset();
 		$<HTMLButtonElement>('project-delete').disabled = true;
+		updateCoverPreview();
 		$('projects-status').textContent = 'Новый проект';
 	});
 
@@ -345,12 +811,17 @@ import Layout from '../../layouts/Layout.astro';
 			title: $<HTMLInputElement>('project-title').value.trim(),
 			slug: $<HTMLInputElement>('project-slug').value.trim(),
 			summary: $<HTMLTextAreaElement>('project-summary').value.trim(),
-			tags: $<HTMLInputElement>('project-tags')
-				.value.split(',')
-				.map((tag) => tag.trim())
-				.filter(Boolean),
+			tags: tagsTextToArray($<HTMLInputElement>('project-tags').value),
 			githubUrl: $<HTMLInputElement>('project-github-url').value.trim(),
 			coverImage: $<HTMLInputElement>('project-cover').value.trim() || undefined,
+			category: $<HTMLSelectElement>('project-category').value || undefined,
+			lead: $<HTMLTextAreaElement>('project-lead').value.trim() || undefined,
+			problem: $<HTMLTextAreaElement>('project-problem').value.trim() || undefined,
+			solution: $<HTMLTextAreaElement>('project-solution')
+				.value.split('\n')
+				.map((s) => s.trim())
+				.filter(Boolean),
+			result: $<HTMLTextAreaElement>('project-result').value.trim() || undefined,
 			date: $<HTMLInputElement>('project-date').value.trim(),
 			body: $<HTMLTextAreaElement>('project-body').value,
 		};
@@ -434,4 +905,58 @@ import Layout from '../../layouts/Layout.astro';
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
 	});
+
+	// --- Cover image upload: commits the file to public/uploads/ via the Contents API ---
+	async function uploadCoverImage(file: File) {
+		const status = $('projects-status');
+		if (!file.type.startsWith('image/')) return;
+		try {
+			status.textContent = 'Загрузка изображения...';
+			const dataUrl: string = await new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(String(reader.result));
+				reader.onerror = () => reject(reader.error);
+				reader.readAsDataURL(file);
+			});
+			const base64 = dataUrlToBase64(dataUrl);
+			const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+			const filename = `${Date.now().toString(36)}-${safeName}`;
+			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${UPLOADS_PATH}/${filename}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					message: `Upload image: ${filename}`,
+					content: base64,
+					branch: BRANCH,
+				}),
+			});
+			$<HTMLInputElement>('project-cover').value = `/uploads/${filename}`;
+			updateCoverPreview();
+			status.textContent = 'Изображение загружено';
+		} catch (err) {
+			status.textContent = `Ошибка: ${(err as Error).message}`;
+		}
+	}
+
+	const dropzone = $('project-dropzone');
+	const coverFileInput = $<HTMLInputElement>('project-cover-file');
+	dropzone.addEventListener('click', () => coverFileInput.click());
+	coverFileInput.addEventListener('change', () => {
+		if (coverFileInput.files?.[0]) uploadCoverImage(coverFileInput.files[0]);
+	});
+	dropzone.addEventListener('dragover', (e) => e.preventDefault());
+	dropzone.addEventListener('drop', (e) => {
+		e.preventDefault();
+		const file = e.dataTransfer?.files?.[0];
+		if (file) uploadCoverImage(file);
+	});
+
+	// --- shared helpers ---
+	function escapeHtml(value: string): string {
+		const div = document.createElement('div');
+		div.textContent = value;
+		return div.innerHTML;
+	}
+	function escapeAttr(value: string): string {
+		return value.replace(/"/g, '&quot;');
+	}
 </script>

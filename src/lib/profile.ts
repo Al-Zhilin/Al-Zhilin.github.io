@@ -1,13 +1,28 @@
+export interface ProfileContact {
+  id: string;
+  label: string;
+  value: string;
+  icon: string;
+}
+
 export interface ProfileData {
   name: string;
   role: string;
-  bio: string[];
   resumeUrl: string;
-  contacts: {
-    email: string;
-    github: string;
-    telegram: string;
+  hero: {
+    eyebrow: string;
+    titleA: string;
+    titleB: string;
+    sub: string;
   };
+  about: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    p2: string;
+    p3: string;
+  };
+  contacts: ProfileContact[];
 }
 
 export function serializeProfile(data: ProfileData): string {

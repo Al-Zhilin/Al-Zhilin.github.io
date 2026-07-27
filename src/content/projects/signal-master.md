@@ -4,6 +4,14 @@ slug: signal-master
 summary: Аппаратно-программный комплекс для унифицированного удалённого управления измерительным оборудованием.
 tags: [FastAPI, PyVISA, "Raspberry Pi 5", Bash]
 githubUrl: https://github.com/Al-Zhilin
+category: tools
+solution:
+  [
+    "FastAPI — backend и REST API для управления оборудованием",
+    "PyVISA — взаимодействие с измерительными приборами по протоколу VISA",
+    "Raspberry Pi 5 — аппаратная платформа",
+    "Bash — сценарии Wi-Fi fallback для восстановления связи при потере сети",
+  ]
 date: "2026-01-01"
 ---
 

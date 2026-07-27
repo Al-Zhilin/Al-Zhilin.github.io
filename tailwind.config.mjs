@@ -10,7 +10,6 @@ export default {
 				surface: '#141d2e',
 				'surface-2': '#1b2540',
 				border: 'rgba(255,255,255,0.07)',
-				'border-accent': 'rgba(240,146,58,0.55)',
 				fg: '#f5f6f9',
 				'ink-2': '#d4d9e2',
 				'ink-3': '#a9b0bc',

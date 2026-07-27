@@ -3,6 +3,8 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import Icon from '../../components/Icon.astro';
+import { catLabel } from '../../lib/categories';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -17,51 +19,84 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, summary, tags, githubUrl, date } = project.data;
+const { title, summary, tags, githubUrl, category, coverImage, lead, problem, solution, result } = project.data;
 const { Content } = await project.render();
-
-const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
-	year: 'numeric',
-	month: 'long',
-	day: 'numeric',
-});
 ---
 
 <Layout title={`${title} — проект`} description={summary}>
 	<Header />
 	<main>
-		<article class="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-20">
-			<a href="/#projects" class="font-mono text-sm text-muted transition-colors hover:text-accent">
-				&larr; Все проекты
-			</a>
+		<article class="mx-auto flex max-w-3xl flex-col gap-8 px-6 pb-24 pt-28 sm:pt-36">
+			<a href="/#work" class="font-mono text-sm text-ink-3 transition-colors hover:text-accent">&larr; Все проекты</a>
 
-			<header class="flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 shadow-card sm:p-8">
-				<h1 class="text-4xl font-medium tracking-tight text-fg">{title}</h1>
-				<p class="text-base text-muted">{summary}</p>
-				<div class="flex flex-wrap items-center gap-4">
-					<time datetime={date} class="font-mono text-sm text-muted">{formattedDate}</time>
-					<a
-						href={githubUrl}
-						target="_blank"
-						rel="noreferrer"
-						class="rounded-lg border border-border bg-surface-2 px-3 py-1 font-mono text-sm text-fg transition-all hover:-translate-y-0.5 hover:border-accent"
-					>
-						GitHub &rarr;
-					</a>
-				</div>
-				<ul class="flex flex-wrap gap-2">
+			{
+				coverImage && (
+					<div class="aspect-[21/9] overflow-hidden rounded-2xl border border-border bg-surface-2">
+						<img src={coverImage} alt={title} class="h-full w-full object-cover" />
+					</div>
+				)
+			}
+
+			<header class="flex flex-col gap-4">
+				<div class="font-mono text-[10.5px] font-bold uppercase tracking-wide text-accent">{catLabel(category)}</div>
+				<h1 class="font-display text-4xl font-semibold tracking-tight text-fg sm:text-5xl">{title}</h1>
+				<div class="flex flex-wrap gap-2">
 					{
 						tags.map((tag) => (
-							<li class="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-sm text-muted">
-								{tag}
-							</li>
+							<span class="chip chip-raised">{tag}</span>
 						))
 					}
-				</ul>
+				</div>
+				<p class="text-lg leading-relaxed text-ink-2">{lead ?? summary}</p>
 			</header>
 
-			<div class="prose-content flex flex-col gap-4 border-t border-border pt-8 text-base leading-relaxed text-muted">
+			{
+				problem && (
+					<div class="border-t border-border pt-8">
+						<h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-3">Задача</h2>
+						<p class="mt-3 text-[15px] leading-relaxed text-ink-3">{problem}</p>
+					</div>
+				)
+			}
+
+			{
+				solution && solution.length > 0 && (
+					<div class="border-t border-border pt-8">
+						<h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-3">Решение</h2>
+						<ul class="mt-3 flex flex-col gap-2.5">
+							{solution.map((step) => (
+								<li class="relative pl-6 text-[14.5px] leading-relaxed text-ink-3">
+									<span class="absolute left-0.5 top-[9px] h-1.5 w-1.5 rounded-sm bg-accent" />
+									{step}
+								</li>
+							))}
+						</ul>
+					</div>
+				)
+			}
+
+			{
+				result && (
+					<div class="border-t border-border pt-8">
+						<h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-3">Результат</h2>
+						<p class="mt-3 font-display text-lg font-semibold text-fg">{result}</p>
+					</div>
+				)
+			}
+
+			<div class="prose-content flex flex-col gap-4 border-t border-border pt-8 text-base leading-relaxed text-ink-3">
 				<Content />
+			</div>
+
+			<div class="border-t border-border pt-8">
+				<a
+					href={githubUrl}
+					target="_blank"
+					rel="noreferrer"
+					class="btn btn-dark"
+				>
+					<Icon name="git" size={18} /> Открыть на GitHub
+				</a>
 			</div>
 		</article>
 	</main>
@@ -70,7 +105,7 @@ const formattedDate = new Date(date).toLocaleDateString('ru-RU', {
 
 <style>
 	.prose-content :global(h2) {
-		@apply mt-4 text-2xl font-medium text-fg;
+		@apply mt-4 font-display text-2xl font-medium text-fg;
 	}
 	.prose-content :global(ul),
 	.prose-content :global(ol) {
