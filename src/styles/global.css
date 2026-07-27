@@ -15,7 +15,7 @@
   :root {
     /* mirrors the Tailwind palette above — read by floating-bg.ts, which
        can't see Tailwind utility classes */
-    --accent: #f0923a;
+    --accent: #2f5fd6;
     --ink-3: #a9b0bc;
   }
 

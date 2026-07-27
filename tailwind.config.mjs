@@ -15,9 +15,9 @@ export default {
 				'ink-3': '#a9b0bc',
 				muted: '#7d8492',
 				accent: {
-					DEFAULT: '#f0923a',
-					hover: '#f5a558',
-					soft: 'rgba(240,146,58,0.12)',
+					DEFAULT: '#2f5fd6',
+					hover: '#4573e0',
+					soft: 'rgba(47,95,214,0.14)',
 				},
 			},
 			fontFamily: {
@@ -28,11 +28,11 @@ export default {
 			boxShadow: {
 				card: '0 4px 24px rgba(0,0,0,0.45)',
 				'card-hover': '0 10px 30px rgba(0,0,0,0.30)',
-				glow: '0 8px 30px -10px rgba(240,146,58,0.45)',
+				glow: '0 8px 30px -10px rgba(47,95,214,0.45)',
 			},
 			backgroundImage: {
 				'hero-glow':
-					'radial-gradient(ellipse 70% 80% at 65% 45%, rgba(0,0,0,0.15), transparent 75%), radial-gradient(circle at 85% -10%, rgba(240,146,58,0.05), transparent 60%)',
+					'radial-gradient(ellipse 70% 80% at 65% 45%, rgba(0,0,0,0.15), transparent 75%), radial-gradient(circle at 85% -10%, rgba(47,95,214,0.08), transparent 60%)',
 			},
 		},
 	},

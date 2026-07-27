@@ -23,31 +23,35 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 		<section id="top" class="hero relative overflow-hidden px-6 pb-16 pt-32 sm:pb-24 sm:pt-40">
 			<div id="hero-canvas" class="pointer-events-none absolute inset-0 -z-10"></div>
 			<div class="pointer-events-none absolute inset-0 -z-10 bg-hero-glow"></div>
-			<div class="mx-auto max-w-3xl">
-				<span class="eyebrow">{profile.hero.eyebrow}</span>
-				<h1 class="mt-6 font-display text-[clamp(40px,8vw,76px)] font-semibold leading-[1.05] tracking-tight text-fg">
-					{profile.hero.titleA}{profile.hero.titleB}
-				</h1>
-				<p class="mt-6 max-w-md text-lg leading-relaxed text-ink-3">{profile.hero.sub}</p>
-				<div class="mt-9 flex flex-wrap gap-3.5">
-					<a href="#work" class="btn btn-dark">Смотреть проекты</a>
-					<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn-link">
-						Резюме <Icon name="arrow" size={15} />
-					</a>
+			<div class="mx-auto max-w-[1180px]">
+				<div class="max-w-2xl">
+					<span class="eyebrow">{profile.hero.eyebrow}</span>
+					<h1 class="mt-6 font-display text-[clamp(40px,8vw,76px)] font-semibold leading-[1.05] tracking-tight text-fg">
+						{profile.hero.titleA}{profile.hero.titleB}
+					</h1>
+					<p class="mt-6 max-w-md text-lg leading-relaxed text-ink-3">{profile.hero.sub}</p>
+					<div class="mt-9 flex flex-wrap gap-3.5">
+						<a href="#work" class="btn btn-dark">Смотреть проекты</a>
+						<a href={profile.resumeUrl} target="_blank" rel="noreferrer" class="btn-link">
+							Резюме <Icon name="arrow" size={15} />
+						</a>
+					</div>
 				</div>
 			</div>
 		</section>
 
 		<section id="about" class="border-t border-border px-6 py-20 sm:py-28">
-			<div class="mx-auto max-w-3xl">
-				<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">01 /</span>{profile.about.eyebrow}</span>
-				<h2 class="mt-4 whitespace-pre-line font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">
-					{profile.about.title}
-				</h2>
-				<div class="mt-6 flex flex-col gap-4 text-base leading-relaxed text-ink-3">
-					<p class="text-[19px] text-ink-2">{profile.about.lead}</p>
-					<p>{profile.about.p2}</p>
-					<p>{profile.about.p3}</p>
+			<div class="mx-auto max-w-[1180px]">
+				<div class="max-w-2xl">
+					<span class="eyebrow"><span class="mr-0.5 font-bold text-accent">01 /</span>{profile.about.eyebrow}</span>
+					<h2 class="mt-4 whitespace-pre-line font-display text-[clamp(28px,4vw,46px)] font-semibold tracking-tight text-fg">
+						{profile.about.title}
+					</h2>
+					<div class="mt-6 flex flex-col gap-4 text-base leading-relaxed text-ink-3">
+						<p class="text-[19px] text-ink-2">{profile.about.lead}</p>
+						<p>{profile.about.p2}</p>
+						<p>{profile.about.p3}</p>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -255,7 +259,7 @@ const categories = ['all', ...new Set(projects.map((p) => p.data.category).filte
 	#work-filters button.is-active {
 		background: var(--accent);
 		border-color: transparent;
-		color: #0c1018;
+		color: #fff;
 		font-weight: 700;
 	}
 	#work-view button.is-active {
