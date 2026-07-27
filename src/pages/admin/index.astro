@@ -319,9 +319,21 @@ import Layout from '../../layouts/Layout.astro';
 		return sessionStorage.getItem(TOKEN_KEY);
 	}
 
+	// HTTP header values must be ISO-8859-1 — anything outside that range
+	// (e.g. Cyrillic text accidentally pasted into the token field) makes
+	// the browser's fetch() throw a cryptic "String contains non ISO-8859-1
+	// code point" error before any request is even sent. Catch it earlier
+	// with a message that says what's actually wrong.
+	function hasInvalidTokenChars(token: string): boolean {
+		return /[^\x00-\xFF]/.test(token);
+	}
+
 	function requireToken(): string {
 		const token = getToken();
 		if (!token) throw new Error('Сначала сохраните GitHub токен');
+		if (hasInvalidTokenChars(token)) {
+			throw new Error('Сохранённый токен содержит недопустимые символы — похоже, это не настоящий GitHub-токен. Сохраните токен заново.');
+		}
 		return token;
 	}
 
@@ -410,6 +422,10 @@ import Layout from '../../layouts/Layout.astro';
 	$('token-save').addEventListener('click', () => {
 		const value = $<HTMLInputElement>('token-input').value.trim();
 		if (!value) return;
+		if (hasInvalidTokenChars(value)) {
+			$('token-status').textContent = 'Ошибка: это не похоже на GitHub-токен (есть недопустимые символы, например кириллица)';
+			return;
+		}
 		sessionStorage.setItem(TOKEN_KEY, value);
 		$<HTMLInputElement>('token-input').value = '';
 		refreshTokenStatus();
