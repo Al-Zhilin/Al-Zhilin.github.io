@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#2f5fd6" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#2f5fd6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="440" fill="#141d2e"/>
+  <rect width="640" height="440" fill="url(#grid)"/>
+  <rect width="640" height="440" fill="url(#glow)"/>
+
+  <!-- resistor -->
+  <g transform="translate(220,220)" stroke="#4a5a78" stroke-width="3" stroke-linecap="round" fill="none">
+    <line x1="-95" y1="0" x2="-46" y2="0"/>
+    <line x1="46" y1="0" x2="95" y2="0"/>
+    <rect x="-46" y="-22" width="92" height="44" rx="6"/>
+    <g stroke="#2f5fd6">
+      <line x1="-22" y1="-22" x2="-22" y2="22"/>
+      <line x1="-2" y1="-22" x2="-2" y2="22"/>
+      <line x1="18" y1="-22" x2="18" y2="22" stroke="#4a5a78"/>
+    </g>
+  </g>
+
+  <!-- capacitor -->
+  <g transform="translate(430,220)" stroke="#4a5a78" stroke-width="4" stroke-linecap="round" fill="none">
+    <line x1="-95" y1="0" x2="-15" y2="0"/>
+    <line x1="15" y1="0" x2="95" y2="0"/>
+    <line x1="-15" y1="-48" x2="-15" y2="48"/>
+    <path d="M15,-48 q17,48 0,96"/>
+  </g>
+
+  <g fill="#3d4b66">
+    <circle cx="80" cy="90" r="4"/>
+    <circle cx="560" cy="360" r="4"/>
+  </g>
+</svg>

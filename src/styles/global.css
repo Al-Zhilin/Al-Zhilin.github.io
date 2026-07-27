@@ -141,4 +141,14 @@
   .dropzone.has-img img {
     @apply block max-h-52 w-full object-cover;
   }
+
+  .cover-preset {
+    @apply aspect-[16/11] cursor-pointer overflow-hidden rounded-md border border-border transition-all hover:-translate-y-0.5 hover:border-accent/50;
+  }
+  .cover-preset img {
+    @apply block h-full w-full object-cover;
+  }
+  .cover-preset.is-active {
+    @apply border-accent ring-2 ring-accent/30;
+  }
 }

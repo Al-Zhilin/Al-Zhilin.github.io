@@ -53,6 +53,7 @@ import Layout from '../../layouts/Layout.astro';
 				<span>Файл резюме (PDF)</span>
 				<div id="resume-dropzone" class="dropzone">Перетащите PDF или нажмите для выбора</div>
 				<input id="resume-file" type="file" accept="application/pdf,.pdf" class="hidden" />
+				<p id="resume-status" class="mt-2 font-mono text-sm text-ink-2"></p>
 			</label>
 			<label class="field"><span>Ссылка на резюме</span><input id="profile-resume" type="text" class="input" /></label>
 
@@ -255,6 +256,23 @@ import Layout from '../../layouts/Layout.astro';
 					<div id="project-dropzone" class="dropzone">Перетащите изображение или нажмите для выбора</div>
 					<input id="project-cover-file" type="file" accept="image/*" class="hidden" />
 					<input id="project-cover" type="text" class="input mt-2" placeholder="/uploads/... или внешняя ссылка" />
+					<div class="mt-3">
+						<span class="mb-2 block font-mono text-[11px] uppercase tracking-wide text-ink-3">Или готовая заглушка, если фото ещё нет</span>
+						<div id="project-cover-presets" class="grid grid-cols-4 gap-2">
+							<button type="button" data-preset="/placeholders/circuit-traces.svg" class="cover-preset" title="Circuit traces">
+								<img src="/placeholders/circuit-traces.svg" alt="Circuit traces" />
+							</button>
+							<button type="button" data-preset="/placeholders/ic-chip.svg" class="cover-preset" title="IC chip">
+								<img src="/placeholders/ic-chip.svg" alt="IC chip" />
+							</button>
+							<button type="button" data-preset="/placeholders/components.svg" class="cover-preset" title="Components">
+								<img src="/placeholders/components.svg" alt="Components" />
+							</button>
+							<button type="button" data-preset="/placeholders/oscilloscope.svg" class="cover-preset" title="Oscilloscope">
+								<img src="/placeholders/oscilloscope.svg" alt="Oscilloscope" />
+							</button>
+						</div>
+					</div>
 				</label>
 
 				<h3 class="mt-2 font-mono text-xs uppercase tracking-wide text-ink-3">Кейс (необязательно)</h3>
@@ -518,7 +536,7 @@ import Layout from '../../layouts/Layout.astro';
 	const RESUME_PATH = 'public/resume.pdf';
 
 	async function uploadResume(file: File) {
-		const status = $('profile-status');
+		const status = $('resume-status');
 		if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
 			status.textContent = 'Ошибка: нужен файл в формате PDF';
 			return;
@@ -535,7 +553,7 @@ import Layout from '../../layouts/Layout.astro';
 			await putContentFile(RESUME_PATH, 'Update resume.pdf', base64);
 			$<HTMLInputElement>('profile-resume').value = '/resume.pdf';
 			if (profileData) profileData.resumeUrl = '/resume.pdf';
-			status.textContent = 'Резюме загружено';
+			status.textContent = `Загружено: ${file.name}`;
 		} catch (err) {
 			status.textContent = `Ошибка: ${(err as Error).message}`;
 		}
@@ -909,8 +927,18 @@ import Layout from '../../layouts/Layout.astro';
 			zone.classList.remove('has-img');
 			zone.textContent = 'Перетащите изображение или нажмите для выбора';
 		}
+		document.querySelectorAll<HTMLButtonElement>('.cover-preset').forEach((btn) => {
+			btn.classList.toggle('is-active', btn.dataset.preset === url);
+		});
 	}
 	$('project-cover').addEventListener('input', updateCoverPreview);
+
+	document.querySelectorAll<HTMLButtonElement>('.cover-preset').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			$<HTMLInputElement>('project-cover').value = btn.dataset.preset ?? '';
+			updateCoverPreview();
+		});
+	});
 
 	$('project-reset').addEventListener('click', () => {
 		currentProjectPath = null;
