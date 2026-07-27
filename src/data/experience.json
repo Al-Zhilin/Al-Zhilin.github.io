@@ -1,5 +1,13 @@
 [
   {
+    "when": "",
+    "current": false,
+    "role": "",
+    "company": "",
+    "desc": "",
+    "tags": []
+  },
+  {
     "when": "2025 - сейчас",
     "current": true,
     "role": "Руководитель проекта Signal-Master",
