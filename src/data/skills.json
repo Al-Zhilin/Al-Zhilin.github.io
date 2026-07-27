@@ -20,7 +20,7 @@
   {
     "icon": "wave",
     "title": "Сеть и интеграции",
-    "desc": "Интеграция устройств с облаком и мессенджерами: VK Bots API, Callback API, облачные функции.",
+    "desc": "Интеграция устройств с облаком и мессенджерами: VK Bots API, Callback API, облачные функции и вычисления.",
     "tags": [
       "VK API",
       "Yandex Cloud Functions",
