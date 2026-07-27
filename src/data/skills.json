@@ -1,32 +1,49 @@
 [
   {
     "icon": "cpu",
-    "title": "Микроконтроллеры",
-    "desc": "ESP32, bare-metal и RTOS-прошивки для встраиваемых и IoT-устройств.",
-    "tags": ["ESP32", "bare-metal", "FreeRTOS"]
+    "title": "C/C++",
+    "desc": "Основной язык разработки.",
+    "tags": []
   },
   {
     "icon": "rtos",
     "title": "RTOS и системный уровень",
     "desc": "Прошивки реального времени на FreeRTOS — от датчиков до сетевых узлов, включая OTA-обновления.",
-    "tags": ["FreeRTOS", "OTA", "GitHub Actions"]
+    "tags": [
+      "FreeRTOS",
+      "OTA",
+      "GitHub Actions"
+    ]
   },
   {
     "icon": "wave",
     "title": "Сеть и интеграции",
     "desc": "Интеграция устройств с облаком и мессенджерами: VK Bots API, Callback API, облачные функции.",
-    "tags": ["VK API", "Yandex Cloud Functions", "YDB"]
+    "tags": [
+      "VK API",
+      "Yandex Cloud Functions",
+      "YDB"
+    ]
   },
   {
     "icon": "tool",
     "title": "Backend и автоматизация",
     "desc": "Серверная часть для управления измерительным оборудованием и приёма телеметрии.",
-    "tags": ["FastAPI", "PyVISA", "Raspberry Pi 5", "Bash"]
+    "tags": [
+      "FastAPI",
+      "PyVISA",
+      "Raspberry Pi 5",
+      "Bash"
+    ]
   },
   {
     "icon": "bolt",
     "title": "DevOps и командная работа",
     "desc": "Сетевой интегратор и техническое лицо команды на хакатонах (AnyWay, 7+ мероприятий).",
-    "tags": ["DevOps", "CI/CD", "Сетевая инфраструктура"]
+    "tags": [
+      "DevOps",
+      "CI/CD",
+      "Сетевая инфраструктура"
+    ]
   }
 ]
