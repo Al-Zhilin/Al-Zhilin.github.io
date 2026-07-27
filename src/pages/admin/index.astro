@@ -311,6 +311,12 @@ import Layout from '../../layouts/Layout.astro';
 		const token = requireToken();
 		const res = await fetch(`${API_BASE}${path}`, {
 			...init,
+			// GitHub's Contents API responses can otherwise be served from the
+			// browser's HTTP cache for an identical URL (e.g. the same GET this
+			// page already made once via autoLoadAll) — a cache hit here would
+			// hand back a stale sha and the next PUT would fail with "does not
+			// match" even though nothing external actually changed the file.
+			cache: 'no-store',
 			headers: {
 				Authorization: `Bearer ${token}`,
 				Accept: 'application/vnd.github+json',
@@ -321,7 +327,7 @@ import Layout from '../../layouts/Layout.astro';
 		if (!res.ok) {
 			const json = await res.json().catch(() => ({}));
 			const error = parseApiError(res.status, json);
-			throw new Error(error.message);
+			throw Object.assign(new Error(error.message), { status: error.status });
 		}
 		if (res.status === 204) return null;
 		return res.json();
@@ -329,6 +335,27 @@ import Layout from '../../layouts/Layout.astro';
 
 	function genId(prefix: string): string {
 		return `${prefix}_${Date.now().toString(36)}${Math.floor(Math.random() * 1e4).toString(36)}`;
+	}
+
+	// Looks up a file's current sha right before we write it — never trust a
+	// sha value captured earlier (at page load or when a form was opened),
+	// since GitHub rejects a PUT/DELETE whose sha doesn't match the file's
+	// *current* state on the branch (its optimistic-concurrency check).
+	async function fetchCurrentSha(path: string): Promise<string | undefined> {
+		try {
+			const existing = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}?ref=${BRANCH}`);
+			return existing.sha;
+		} catch {
+			return undefined; // файл ещё не существует — создаём с нуля
+		}
+	}
+
+	async function putContentFile(path: string, message: string, base64Content: string) {
+		const sha = await fetchCurrentSha(path);
+		return githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+			method: 'PUT',
+			body: JSON.stringify({ message, content: base64Content, sha, branch: BRANCH }),
+		});
 	}
 
 	// --- Tabs ---
@@ -379,7 +406,6 @@ import Layout from '../../layouts/Layout.astro';
 
 	// ===================== PROFILE + CONTACTS (shared src/data/profile.json) =====================
 	let profileData: ProfileData | null = null;
-	let profileSha: string | null = null;
 
 	function fillProfileForm(data: ProfileData) {
 		$<HTMLInputElement>('profile-name').value = data.name;
@@ -411,7 +437,6 @@ import Layout from '../../layouts/Layout.astro';
 
 	async function loadProfile(): Promise<ProfileData> {
 		const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}?ref=${BRANCH}`);
-		profileSha = json.sha;
 		profileData = JSON.parse(decodeBase64Content(json)) as ProfileData;
 		return profileData;
 	}
@@ -420,16 +445,7 @@ import Layout from '../../layouts/Layout.astro';
 		if (!profileData) throw new Error('Сначала загрузите профиль');
 		const content = serializeProfile(profileData);
 		status.textContent = 'Сохранение...';
-		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PROFILE_PATH}`, {
-			method: 'PUT',
-			body: JSON.stringify({
-				message: `Update profile.json`,
-				content: encodeBase64Content(content),
-				sha: profileSha ?? undefined,
-				branch: BRANCH,
-			}),
-		});
-		profileSha = res.content.sha;
+		await putContentFile(PROFILE_PATH, 'Update profile.json', encodeBase64Content(content));
 		status.textContent = 'Сохранено';
 	}
 
@@ -509,14 +525,6 @@ import Layout from '../../layouts/Layout.astro';
 		}
 		try {
 			status.textContent = 'Загрузка резюме...';
-			let existingSha: string | undefined;
-			try {
-				const existing = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${RESUME_PATH}?ref=${BRANCH}`);
-				existingSha = existing.sha;
-			} catch {
-				// файла ещё нет — создаём с нуля
-			}
-
 			const dataUrl: string = await new Promise((resolve, reject) => {
 				const reader = new FileReader();
 				reader.onload = () => resolve(String(reader.result));
@@ -524,15 +532,7 @@ import Layout from '../../layouts/Layout.astro';
 				reader.readAsDataURL(file);
 			});
 			const base64 = dataUrlToBase64(dataUrl);
-			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${RESUME_PATH}`, {
-				method: 'PUT',
-				body: JSON.stringify({
-					message: 'Update resume.pdf',
-					content: base64,
-					sha: existingSha,
-					branch: BRANCH,
-				}),
-			});
+			await putContentFile(RESUME_PATH, 'Update resume.pdf', base64);
 			$<HTMLInputElement>('profile-resume').value = '/resume.pdf';
 			if (profileData) profileData.resumeUrl = '/resume.pdf';
 			status.textContent = 'Резюме загружено';
@@ -639,7 +639,6 @@ import Layout from '../../layouts/Layout.astro';
 
 	// ===================== SKILLS =====================
 	let skillsData: SkillCard[] = [];
-	let skillsSha: string | null = null;
 
 	function renderSkillsList() {
 		const list = $('skills-list');
@@ -679,16 +678,7 @@ import Layout from '../../layouts/Layout.astro';
 	async function saveSkillsFile(status: HTMLElement) {
 		const content = serializeSkills(skillsData);
 		status.textContent = 'Сохранение...';
-		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SKILLS_PATH}`, {
-			method: 'PUT',
-			body: JSON.stringify({
-				message: 'Update skills.json',
-				content: encodeBase64Content(content),
-				sha: skillsSha ?? undefined,
-				branch: BRANCH,
-			}),
-		});
-		skillsSha = res.content.sha;
+		await putContentFile(SKILLS_PATH, 'Update skills.json', encodeBase64Content(content));
 		status.textContent = 'Сохранено';
 	}
 
@@ -728,7 +718,6 @@ import Layout from '../../layouts/Layout.astro';
 		status.textContent = 'Загрузка...';
 		try {
 			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SKILLS_PATH}?ref=${BRANCH}`);
-			skillsSha = json.sha;
 			skillsData = JSON.parse(decodeBase64Content(json));
 			renderSkillsList();
 			status.textContent = 'Загружено';
@@ -740,7 +729,6 @@ import Layout from '../../layouts/Layout.astro';
 
 	// ===================== EXPERIENCE =====================
 	let expData: ExperienceEntry[] = [];
-	let expSha: string | null = null;
 
 	function renderExpList() {
 		const list = $('exp-list');
@@ -788,16 +776,7 @@ import Layout from '../../layouts/Layout.astro';
 	async function saveExpFile(status: HTMLElement) {
 		const content = serializeExperience(expData);
 		status.textContent = 'Сохранение...';
-		const res = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${EXPERIENCE_PATH}`, {
-			method: 'PUT',
-			body: JSON.stringify({
-				message: 'Update experience.json',
-				content: encodeBase64Content(content),
-				sha: expSha ?? undefined,
-				branch: BRANCH,
-			}),
-		});
-		expSha = res.content.sha;
+		await putContentFile(EXPERIENCE_PATH, 'Update experience.json', encodeBase64Content(content));
 		status.textContent = 'Сохранено';
 	}
 
@@ -854,7 +833,6 @@ import Layout from '../../layouts/Layout.astro';
 		status.textContent = 'Загрузка...';
 		try {
 			const json = await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${EXPERIENCE_PATH}?ref=${BRANCH}`);
-			expSha = json.sha;
 			expData = JSON.parse(decodeBase64Content(json));
 			renderExpList();
 			status.textContent = 'Загружено';
@@ -889,7 +867,6 @@ import Layout from '../../layouts/Layout.astro';
 	$('projects-load').addEventListener('click', loadProjectsList);
 
 	let currentProjectPath: string | null = null;
-	let currentProjectSha: string | null = null;
 
 	async function loadProjectIntoForm(path: string) {
 		const status = $('projects-status');
@@ -900,7 +877,6 @@ import Layout from '../../layouts/Layout.astro';
 			const { frontmatter, body } = parseProjectMarkdown(raw);
 
 			currentProjectPath = path;
-			currentProjectSha = json.sha;
 
 			$<HTMLInputElement>('project-title').value = String(frontmatter.title ?? '');
 			$<HTMLInputElement>('project-slug').value = String(frontmatter.slug ?? '');
@@ -938,7 +914,6 @@ import Layout from '../../layouts/Layout.astro';
 
 	$('project-reset').addEventListener('click', () => {
 		currentProjectPath = null;
-		currentProjectSha = null;
 		$<HTMLFormElement>('project-form').reset();
 		$<HTMLButtonElement>('project-delete').disabled = true;
 		updateCoverPreview();
@@ -981,15 +956,7 @@ import Layout from '../../layouts/Layout.astro';
 			const path = currentProjectPath ?? `${PROJECTS_PATH}/${data.slug}.md`;
 			const content = serializeProjectFrontmatter(data);
 			status.textContent = 'Сохранение...';
-			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-				method: 'PUT',
-				body: JSON.stringify({
-					message: currentProjectPath ? `Update project: ${data.title}` : `Add project: ${data.title}`,
-					content: encodeBase64Content(content),
-					sha: currentProjectSha ?? undefined,
-					branch: BRANCH,
-				}),
-			});
+			await putContentFile(path, currentProjectPath ? `Update project: ${data.title}` : `Add project: ${data.title}`, encodeBase64Content(content));
 			currentProjectPath = path;
 			status.textContent = 'Сохранено';
 			await loadProjectsList();
@@ -999,15 +966,17 @@ import Layout from '../../layouts/Layout.astro';
 	});
 
 	$('project-delete').addEventListener('click', async () => {
-		if (!currentProjectPath || !currentProjectSha) return;
+		if (!currentProjectPath) return;
 		const status = $('projects-status');
 		try {
 			status.textContent = 'Удаление...';
+			const sha = await fetchCurrentSha(currentProjectPath);
+			if (!sha) throw new Error('Файл не найден — возможно, уже удалён');
 			await githubFetch(`/repos/${REPO_OWNER}/${REPO_NAME}/contents/${currentProjectPath}`, {
 				method: 'DELETE',
 				body: JSON.stringify({
 					message: `Delete project: ${currentProjectPath}`,
-					sha: currentProjectSha,
+					sha,
 					branch: BRANCH,
 				}),
 			});
